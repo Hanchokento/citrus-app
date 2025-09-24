@@ -1,0 +1,3 @@
+*.json
+*.env
+backend/service_account.json
