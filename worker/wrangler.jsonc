@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "citrus-app-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-04-28",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "citrus-app-db",
+      "database_id": "replace-with-your-d1-database-id"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "citrus-app-r2"
+    }
+  ]
+}
