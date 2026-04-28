@@ -1,9 +1,0 @@
-[build]
-builder = "NIXPACKS"
-
-[env]
-PYTHONUNBUFFERED = "1"
-
-[deploy]
-# サービスのワーキングディレクトリを deploy/ に
-workdir = "."
