@@ -1,3 +1,4 @@
+// worker/src/core/r2.ts
 export async function readTextFromR2(bucket: R2Bucket, key: string): Promise<string> {
   const object = await bucket.get(key);
 

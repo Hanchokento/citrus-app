@@ -1,3 +1,4 @@
+-- worker/schema.sql
 CREATE TABLE IF NOT EXISTS user_logs (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   session_id TEXT NOT NULL,

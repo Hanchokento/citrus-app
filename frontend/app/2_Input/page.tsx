@@ -1,4 +1,5 @@
 "use client";
+// frontend/app/2_Input/page.tsx
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";

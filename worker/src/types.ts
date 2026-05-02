@@ -1,3 +1,4 @@
+// worker/src/types.ts
 export type TasteInput = {
   brix: number;
   acid: number;

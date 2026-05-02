@@ -1,4 +1,5 @@
 "use client";
+// frontend/lib/context.tsx
 
 import {
   createContext,

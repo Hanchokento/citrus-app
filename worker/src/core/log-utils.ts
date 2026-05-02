@@ -1,3 +1,4 @@
+// worker/src/core/log-utils.ts
 export const CLICK_COLUMNS = [
   "1_a", "1_r", "1_s",
   "2_a", "2_r", "2_s",

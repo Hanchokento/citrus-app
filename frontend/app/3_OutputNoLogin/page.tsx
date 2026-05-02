@@ -1,4 +1,5 @@
 "use client";
+// frontend/app/3_OutputNoLogin/page.tsx
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
