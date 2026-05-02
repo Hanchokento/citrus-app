@@ -1453,3 +1453,68 @@ p {
     width: 100%;
   }
 }
+
+/* ===== Result footer action buttons ===== */
+
+.footerNav {
+  width: min(760px, 94vw);
+  margin: 34px auto 0;
+  padding: 18px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(249, 128, 6, 0.12);
+  box-shadow: 0 14px 34px rgba(146, 64, 14, 0.10);
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footerNav button {
+  appearance: none;
+  border: 0;
+  min-width: 230px;
+  min-height: 54px;
+  padding: 15px 26px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.footerNav .primaryButton {
+  background: linear-gradient(135deg, #ffa94d, #f98006);
+  color: #ffffff;
+  box-shadow: 0 10px 22px rgba(249, 128, 6, 0.28);
+}
+
+.footerNav .primaryButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(249, 128, 6, 0.34);
+}
+
+.footerNav .secondaryButton {
+  background: #ffffff;
+  color: #f97316;
+  border: 2px solid rgba(249, 128, 6, 0.35);
+}
+
+.footerNav .secondaryButton:hover {
+  background: #fff7ed;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 640px) {
+  .footerNav {
+    padding: 14px;
+  }
+
+  .footerNav button {
+    width: 100%;
+    min-width: 0;
+  }
+}
