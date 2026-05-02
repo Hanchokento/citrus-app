@@ -2,6 +2,7 @@
 
 import { Hono } from "hono";
 import type { Env } from "../index";
+import * as XLSX from "xlsx";
 
 type TasteInput = {
   brix: number;
@@ -14,14 +15,23 @@ type TasteInput = {
 
 type CitrusFeature = TasteInput & {
   id: number;
-  name?: string;
+  name: string;
 };
 
-type ScoredResult = {
+type CitrusDetail = {
+  id: number;
+  name: string;
+  description: string;
+  imageUrl: string;
+};
+
+type RecommendationResult = {
   id: number;
   rank: number;
   score: number;
   name: string;
+  description: string;
+  imageUrl: string;
   features: TasteInput;
 };
 
@@ -49,9 +59,9 @@ recommendRoute.post("/", async (c) => {
     );
   }
 
-  const object = await c.env.R2.get("citrus_features.csv");
+  const featuresObject = await c.env.R2.get("citrus_features.csv");
 
-  if (!object) {
+  if (!featuresObject) {
     return c.json(
       {
         ok: false,
@@ -61,8 +71,8 @@ recommendRoute.post("/", async (c) => {
     );
   }
 
-  const csvText = await object.text();
-  const features = parseCitrusFeaturesCsv(csvText);
+  const featuresText = await featuresObject.text();
+  const features = parseCitrusFeaturesCsv(featuresText);
 
   if (features.length === 0) {
     return c.json(
@@ -74,11 +84,17 @@ recommendRoute.post("/", async (c) => {
     );
   }
 
-  const result = calculateTop3(input, features);
+  const details = await loadDetailsFromR2(c.env.R2);
+  const detailMap = new Map(details.map((detail) => [detail.id, detail]));
+
+  const result = calculateTop3(input, features, detailMap);
 
   return c.json({
     ok: true,
-    source: "r2:citrus_features.csv",
+    source: {
+      features: "r2:citrus_features.csv",
+      details: "r2:citrus_details_list.xlsx",
+    },
     result,
   });
 });
@@ -90,7 +106,11 @@ function isValidTasteInput(value: Partial<TasteInput>): value is TasteInput {
   });
 }
 
-function calculateTop3(input: TasteInput, features: CitrusFeature[]): ScoredResult[] {
+function calculateTop3(
+  input: TasteInput,
+  features: CitrusFeature[],
+  detailMap: Map<number, CitrusDetail>
+): RecommendationResult[] {
   const maxDist = Math.sqrt(FEATURE_KEYS.length * 25);
 
   return features
@@ -105,8 +125,27 @@ function calculateTop3(input: TasteInput, features: CitrusFeature[]): ScoredResu
       const score = Math.max(0, Math.min(1, 1 - dist / maxDist));
 
       return {
+        item,
+        score,
+      };
+    })
+    .sort((a, b) => b.score - a.score || a.item.id - b.item.id)
+    .slice(0, 3)
+    .map(({ item, score }, index) => {
+      const detail = detailMap.get(item.id);
+      const name = detail?.name || item.name || `柑橘ID ${item.id}`;
+
+      return {
         id: item.id,
-        name: item.name ?? `柑橘ID ${item.id}`,
+        rank: index + 1,
+        score: Number(score.toFixed(4)),
+        name,
+        description:
+          detail?.description ||
+          "この柑橘の説明文は現在準備中です。",
+        imageUrl:
+          detail?.imageUrl ||
+          buildCitrusImagePath(item.id),
         features: {
           brix: item.brix,
           acid: item.acid,
@@ -115,19 +154,64 @@ function calculateTop3(input: TasteInput, features: CitrusFeature[]): ScoredResu
           moisture: item.moisture,
           texture: item.texture,
         },
-        score,
-        dist,
       };
-    })
-    .sort((a, b) => b.score - a.score || a.id - b.id)
-    .slice(0, 3)
-    .map((item, index) => ({
-      id: item.id,
-      rank: index + 1,
-      score: Number(item.score.toFixed(4)),
-      name: item.name,
-      features: item.features,
-    }));
+    });
+}
+
+async function loadDetailsFromR2(r2: R2Bucket): Promise<CitrusDetail[]> {
+  const object = await r2.get("citrus_details_list.xlsx");
+
+  if (!object) {
+    return [];
+  }
+
+  const buffer = await object.arrayBuffer();
+  const workbook = XLSX.read(buffer, { type: "array" });
+  const sheet =
+    workbook.Sheets["description_image"] ??
+    workbook.Sheets[workbook.SheetNames[0]];
+
+  if (!sheet) {
+    return [];
+  }
+
+  const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, {
+    defval: "",
+  });
+
+  return rows
+    .map(parseDetailRow)
+    .filter((detail): detail is CitrusDetail => detail !== null);
+}
+
+function parseDetailRow(row: Record<string, unknown>): CitrusDetail | null {
+  const id = toNumberFromUnknown(
+    getCell(row, "Item_ID", "id", "品種id", "品種ID", "番号")
+  );
+
+  if (id === null) {
+    return null;
+  }
+
+  const name =
+    toStringFromUnknown(getCell(row, "Item_name", "name", "品種名")) ||
+    `柑橘ID ${id}`;
+
+  const description =
+    toStringFromUnknown(getCell(row, "Description", "description", "説明")) ||
+    "";
+
+  const imageUrl =
+    toStringFromUnknown(
+      getCell(row, "Image_URL", "image_url", "Image", "image", "画像")
+    ) || buildCitrusImagePath(id);
+
+  return {
+    id,
+    name,
+    description,
+    imageUrl,
+  };
 }
 
 function parseCitrusFeaturesCsv(csvText: string): CitrusFeature[] {
@@ -180,7 +264,7 @@ function parseFeatureRow(headers: string[], row: string[]): CitrusFeature | null
 
   return {
     id,
-    name,
+    name: name?.trim() || `柑橘ID ${id}`,
     brix,
     acid,
     bitterness,
@@ -188,6 +272,21 @@ function parseFeatureRow(headers: string[], row: string[]): CitrusFeature | null
     moisture,
     texture,
   };
+}
+
+function getCell(row: Record<string, unknown>, ...keys: string[]): unknown {
+  const normalized = new Map(
+    Object.entries(row).map(([key, value]) => [normalizeHeader(key), value])
+  );
+
+  for (const key of keys) {
+    const value = normalized.get(normalizeHeader(key));
+    if (value !== undefined && value !== null && String(value).trim() !== "") {
+      return value;
+    }
+  }
+
+  return undefined;
 }
 
 function toNumber(value: string | undefined): number | null {
@@ -204,8 +303,34 @@ function toNumber(value: string | undefined): number | null {
   return parsed;
 }
 
+function toNumberFromUnknown(value: unknown): number | null {
+  if (value === undefined || value === null || String(value).trim() === "") {
+    return null;
+  }
+
+  const parsed = Number(String(value).trim());
+
+  if (!Number.isFinite(parsed)) {
+    return null;
+  }
+
+  return parsed;
+}
+
+function toStringFromUnknown(value: unknown): string {
+  if (value === undefined || value === null) {
+    return "";
+  }
+
+  return String(value).trim();
+}
+
 function normalizeHeader(value: string): string {
   return value.trim().replace(/^\uFEFF/, "").toLowerCase();
+}
+
+function buildCitrusImagePath(id: number): string {
+  return `/citrus_images/citrus_${id}.JPG`;
 }
 
 function parseCsv(text: string): string[][] {

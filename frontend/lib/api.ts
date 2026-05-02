@@ -17,13 +17,15 @@ type WorkerRecommendationItem = {
   rank: number;
   score?: number;
   name?: string;
+  description?: string;
+  imageUrl?: string;
   features?: TasteInput;
 };
 
 type RecommendResponse =
   | {
       ok: true;
-      source?: string;
+      source?: unknown;
       result: WorkerRecommendationItem[];
     }
   | {
@@ -60,8 +62,12 @@ export async function requestRecommendation(
       id: item.id,
       rank: item.rank,
       name,
-      description: "この柑橘の説明文は現在準備中です。",
-      imageUrl: "/other_images/no_image.png",
+      description:
+        item.description ||
+        "この柑橘の説明文は現在準備中です。",
+      imageUrl:
+        item.imageUrl ||
+        "/other_images/no_image.png",
       features: item.features ?? input,
       amazonUrl: buildAmazonUrl(name),
       rakutenUrl: buildRakutenUrl(name),
