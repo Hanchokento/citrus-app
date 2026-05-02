@@ -9,8 +9,12 @@ import type {
   UserPreferences,
 } from "./types";
 
+// 公開済みのWorker API。
+// NEXT_PUBLIC_WORKER_BASE_URL が設定されていればそれを優先し、
+// 未設定でも本番Workerへ接続できるように固定URLをfallbackにする。
 const WORKER_BASE_URL =
-  process.env.NEXT_PUBLIC_WORKER_BASE_URL || "http://localhost:8787";
+  process.env.NEXT_PUBLIC_WORKER_BASE_URL ||
+  "https://citrus-app-ts.hmkt0520.workers.dev";
 
 type WorkerRankedItem = RankedItem & {
   score?: number;
@@ -19,14 +23,23 @@ type WorkerRankedItem = RankedItem & {
 type RecommendResponse =
   | {
       ok: true;
+      source?: string;
       result: WorkerRankedItem[];
     }
   | {
       ok: true;
       topIds: number[];
+    }
+  | {
+      ok: false;
+      error: string;
     };
 
 function normalizeRankedItems(data: RecommendResponse): RankedItem[] {
+  if (!data.ok) {
+    throw new Error(data.error);
+  }
+
   if ("result" in data) {
     return data.result.map((item, index) => ({
       id: item.id,
