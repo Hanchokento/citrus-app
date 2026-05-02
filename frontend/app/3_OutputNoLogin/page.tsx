@@ -28,10 +28,10 @@ export default function OutputNoLoginPage() {
 
   if (items.length === 0) {
     return (
-      <main className="resultPage centerShell">
-        <section className="heroCard">
-          <div className="heroEmoji">🍊</div>
-          <h1 className="heroTitle">結果を準備中...</h1>
+      <main className="resultPage resultPageCenter">
+        <section className="resultLoadingCard">
+          <div className="resultLoadingEmoji">🍊</div>
+          <h1>結果を準備中...</h1>
         </section>
       </main>
     );
@@ -49,7 +49,7 @@ export default function OutputNoLoginPage() {
         </button>
 
         <div>
-          <h1 className="resultTitle">🍊 診断結果</h1>
+          <h1 className="resultTitle">診断結果</h1>
           <p className="resultLead">
             あなたの好みに近い柑橘はこちらです。
           </p>
@@ -100,8 +100,8 @@ export default function OutputNoLoginPage() {
                 <span className="disabledButton">楽天で探す</span>
                 <span className="disabledButton">ふるさと納税で探す</span>
 
-                <p className="loginBenefit">
-                  ログインすると、購入リンクを開けるようになります。
+                <p className="loginBenefitNote">
+                  ログインすると購入リンクを開けます
                 </p>
               </div>
             </div>
@@ -109,9 +109,9 @@ export default function OutputNoLoginPage() {
         ))}
       </section>
 
-      <footer className="footerNav">
+      <footer className="resultFooter">
         <button
-          className="primaryButton"
+          className="topPrimaryButton"
           type="button"
           onClick={() => router.push("/3_Login")}
         >
@@ -119,7 +119,7 @@ export default function OutputNoLoginPage() {
         </button>
 
         <button
-          className="secondaryButton"
+          className="topSecondaryButton"
           type="button"
           onClick={() => router.push("/2_Input")}
         >

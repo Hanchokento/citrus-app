@@ -21,59 +21,48 @@ export default function TopLoginPage() {
   }
 
   return (
-    <main className="pageShell centerShell">
-      <section>
-        <div className="loginCard">
-          <div className="loginUser">
-            <div className="avatar">
-              {userPicture ? (
-                <img src={userPicture} alt="ユーザー画像" />
-              ) : (
-                <span>{userName?.slice(0, 1) ?? "L"}</span>
-              )}
-            </div>
-
-            <div>
-              <strong>ようこそ、{userName ?? "LINEユーザー"} さん</strong>
-              <div>{authProvider ?? "LINE"} でログイン中</div>
-            </div>
+    <main className="topPage">
+      <section className="topHeroCard">
+        <div className="topLoginUserCard">
+          <div className="topLoginAvatar">
+            {userPicture ? (
+              <img src={userPicture} alt="ユーザー画像" />
+            ) : (
+              <span>{userName?.slice(0, 1) ?? "L"}</span>
+            )}
           </div>
 
-          <div className="badge">
-            <span className="badgeDot" />
-            ログイン中
+          <div className="topLoginUserInfo">
+            <span className="topLoginUserName">
+              {userName ?? "LINEユーザー"} さん
+            </span>
+            <span className="topLoginBadge">
+              <span className="topLoginBadgeDot" />
+              {authProvider ?? "LINE"} でログイン中
+            </span>
           </div>
         </div>
 
-        <section className="heroCard">
-          <div className="heroEmoji">🍊</div>
+        <h1>柑橘類の推薦システム</h1>
+        <p>今日の気分に合う柑橘を、もう一度探してみましょう。</p>
 
-          <h1 className="heroTitle">柑橘おすすめ診断</h1>
+        <div className="topButtonRow">
+          <button
+            className="topPrimaryButton"
+            type="button"
+            onClick={() => router.push("/2_Input")}
+          >
+            診断を始める
+          </button>
 
-          <p className="heroLead">
-            今日の気分に合う柑橘を、
-            <br />
-            もう一度探してみましょう。
-          </p>
-
-          <div className="buttonRow">
-            <button
-              className="primaryButton"
-              type="button"
-              onClick={() => router.push("/2_Input")}
-            >
-              🍊 診断を始める
-            </button>
-
-            <button
-              className="dangerButton"
-              type="button"
-              onClick={handleLogout}
-            >
-              ログアウト
-            </button>
-          </div>
-        </section>
+          <button
+            className="topSecondaryButton topLogoutButton"
+            type="button"
+            onClick={handleLogout}
+          >
+            ログアウト
+          </button>
+        </div>
       </section>
     </main>
   );
