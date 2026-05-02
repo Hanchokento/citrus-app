@@ -3,6 +3,7 @@ import { recommendRoute } from "./routes/recommend";
 import { diagnosisLogRoute } from "./routes/diagnosis-log";
 import { clickLogRoute } from "./routes/click-log";
 import { lineOAuthRoute } from "./routes/line-oauth";
+import { healthRoute } from "./routes/health";
 
 export type Env = {
   DB: D1Database;
@@ -21,6 +22,7 @@ app.get("/", (c) => {
   });
 });
 
+app.route("/health", healthRoute);
 app.route("/recommend", recommendRoute);
 app.route("/logs/diagnosis", diagnosisLogRoute);
 app.route("/click", clickLogRoute);
