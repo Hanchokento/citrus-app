@@ -102,10 +102,10 @@ export default function OutputLoginPage() {
 
               <div className="resultGrid">
                 <div className="resultImageWrap">
-                  <img
-                    className="resultImage"
-                    src={item.imageUrl}
+                  <CitrusImage
+                    id={item.id}
                     alt={item.name}
+                    className="resultImage"
                   />
                 </div>
 
