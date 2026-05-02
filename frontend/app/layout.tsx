@@ -17,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja">
+    <html lang="ja" data-scroll-behavior="smooth" style={{ backgroundColor: "#fff7ed" }}>
       <body>
         <AppProvider>{children}</AppProvider>
       </body>

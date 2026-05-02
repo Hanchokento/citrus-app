@@ -39,10 +39,10 @@ export default function OutputLoginPage() {
 
   if (items.length === 0) {
     return (
-      <main className="resultPage centerShell">
-        <section className="heroCard">
-          <div className="heroEmoji">🍊</div>
-          <h1 className="heroTitle">結果を準備中...</h1>
+      <main className="resultPage resultPageCenter">
+        <section className="resultLoadingCard">
+          <div className="resultLoadingEmoji">🍊</div>
+          <h1>結果を準備中...</h1>
         </section>
       </main>
     );
@@ -60,7 +60,7 @@ export default function OutputLoginPage() {
         </button>
 
         <div>
-          <h1 className="resultTitle">🍊 診断結果</h1>
+          <h1 className="resultTitle">診断結果</h1>
           <p className="resultLead">
             気になる柑橘は、そのまま購入ページで探せます。
           </p>
@@ -127,7 +127,7 @@ export default function OutputLoginPage() {
 
                 <div className="linkColumn">
                   <a
-                    className="amazonButton"
+                    className="ecButton ecAmazon"
                     href={amazonUrl}
                     target="_blank"
                     rel="noreferrer"
@@ -136,7 +136,7 @@ export default function OutputLoginPage() {
                   </a>
 
                   <a
-                    className="rakutenButton"
+                    className="ecButton ecRakuten"
                     href={rakutenUrl}
                     target="_blank"
                     rel="noreferrer"
@@ -145,7 +145,7 @@ export default function OutputLoginPage() {
                   </a>
 
                   <a
-                    className="satofuruButton"
+                    className="ecButton ecSatofuru"
                     href={satofuruUrl}
                     target="_blank"
                     rel="noreferrer"
@@ -159,9 +159,9 @@ export default function OutputLoginPage() {
         })}
       </section>
 
-      <footer className="footerNav">
+      <footer className="resultFooter">
         <button
-          className="primaryButton"
+          className="topPrimaryButton"
           type="button"
           onClick={() => router.push("/2_Input")}
         >
@@ -169,7 +169,7 @@ export default function OutputLoginPage() {
         </button>
 
         <button
-          className="secondaryButton"
+          className="topSecondaryButton"
           type="button"
           onClick={() => router.push("/1_TopLogin")}
         >
