@@ -1158,3 +1158,27 @@ p {
   background: #fef2f2;
   transform: translateY(-1px);
 }
+
+/* ===== Login page width tuning ===== */
+
+.loginCard {
+  width: min(920px, 92vw);
+  max-width: none;
+}
+
+.loginBenefitBox,
+.loginDevNotice {
+  width: min(760px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.lineLoginButton {
+  min-width: min(420px, 100%);
+}
+
+@media (max-width: 640px) {
+  .loginCard {
+    width: min(100%, 92vw);
+  }
+}
