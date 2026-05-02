@@ -49,7 +49,7 @@ export default function LoginPage() {
 
         <div className="loginDevNotice">
           <strong>開発中：</strong>
-          現在はLINE OAuth本実装前のため、モックログインで動作確認しています。
+          現在はLINE OAuth本実装前のため、ダミーアカウントで動作中。
         </div>
 
         <div className="topButtonRow loginButtonRow">
