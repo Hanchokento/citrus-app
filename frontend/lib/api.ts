@@ -52,7 +52,8 @@ export async function requestRecommendation(
   });
 
   if (!res.ok) {
-    throw new Error("Failed to request recommendation");
+    const message = await res.text().catch(() => "");
+    throw new Error(`Failed to request recommendation: ${res.status} ${message}`);
   }
 
   const data = (await res.json()) as RecommendResponse;
@@ -71,7 +72,8 @@ export async function appendDiagnosisLog(
   });
 
   if (!res.ok) {
-    throw new Error("Failed to append diagnosis log");
+    const message = await res.text().catch(() => "");
+    throw new Error(`Failed to append diagnosis log: ${res.status} ${message}`);
   }
 }
 

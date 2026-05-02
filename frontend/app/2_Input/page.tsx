@@ -164,7 +164,7 @@ export default function InputPage() {
 
       sessionStorage.setItem("citrus_recommendations", JSON.stringify(recommendations));
 
-      await appendDiagnosisLog({
+      appendDiagnosisLog({
         sessionId,
         userId,
         inputJson: prefs,
@@ -173,6 +173,8 @@ export default function InputPage() {
           rank: item.rank,
         })),
         timestamp: new Date().toISOString(),
+      }).catch((logError) => {
+        console.warn("Failed to append diagnosis log", logError);
       });
 
       router.push(isLoggedIn ? "/3_OutputLogin" : "/3_OutputNoLogin");
