@@ -21,6 +21,8 @@ type ScoredResult = {
   id: number;
   rank: number;
   score: number;
+  name: string;
+  features: TasteInput;
 };
 
 const FEATURE_KEYS: (keyof TasteInput)[] = [
@@ -104,6 +106,15 @@ function calculateTop3(input: TasteInput, features: CitrusFeature[]): ScoredResu
 
       return {
         id: item.id,
+        name: item.name ?? `柑橘ID ${item.id}`,
+        features: {
+          brix: item.brix,
+          acid: item.acid,
+          bitterness: item.bitterness,
+          aroma: item.aroma,
+          moisture: item.moisture,
+          texture: item.texture,
+        },
         score,
         dist,
       };
@@ -114,6 +125,8 @@ function calculateTop3(input: TasteInput, features: CitrusFeature[]): ScoredResu
       id: item.id,
       rank: index + 1,
       score: Number(item.score.toFixed(4)),
+      name: item.name,
+      features: item.features,
     }));
 }
 

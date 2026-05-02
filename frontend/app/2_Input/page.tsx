@@ -4,7 +4,6 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/lib/context";
-import { buildMockRecommendationsFromRankedItems } from "@/lib/mock-data";
 import { appendDiagnosisLog, requestRecommendation } from "@/lib/api";
 import type { TasteInput, UserPreferences } from "@/lib/types";
 
@@ -151,12 +150,8 @@ export default function InputPage() {
     };
 
     try {
-      const rankedItems = await requestRecommendation(input);
-      const recommendations = buildMockRecommendationsFromRankedItems(
-        rankedItems,
-        input
-      );
-      const topIds = rankedItems.map((item) => item.id);
+      const recommendations = await requestRecommendation(input);
+      const topIds = recommendations.map((item) => item.id);
       const sessionId = crypto.randomUUID();
 
       setUserPreferences(prefs);
@@ -168,7 +163,7 @@ export default function InputPage() {
         sessionId,
         userId,
         inputJson: prefs,
-        result: rankedItems.map((item) => ({
+        result: recommendations.map((item) => ({
           id: item.id,
           rank: item.rank,
         })),

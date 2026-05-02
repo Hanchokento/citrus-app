@@ -1,61 +1,39 @@
 // frontend/lib/api.ts
 // Cloudflare Worker との通信を担うAPIクライアント
-// frontend はAPI本体を持たず、worker/ のエンドポイントを呼ぶだけにする
 
 import type {
   DiagnosisLogEntry,
-  RankedItem,
+  RecommendationItem,
   TasteInput,
   UserPreferences,
 } from "./types";
 
-// 公開済みのWorker API。
-// NEXT_PUBLIC_WORKER_BASE_URL が設定されていればそれを優先し、
-// 未設定でも本番Workerへ接続できるように固定URLをfallbackにする。
 const WORKER_BASE_URL =
   process.env.NEXT_PUBLIC_WORKER_BASE_URL ||
   "https://citrus-app-ts.hmkt0520.workers.dev";
 
-type WorkerRankedItem = RankedItem & {
+type WorkerRecommendationItem = {
+  id: number;
+  rank: number;
   score?: number;
+  name?: string;
+  features?: TasteInput;
 };
 
 type RecommendResponse =
   | {
       ok: true;
       source?: string;
-      result: WorkerRankedItem[];
-    }
-  | {
-      ok: true;
-      topIds: number[];
+      result: WorkerRecommendationItem[];
     }
   | {
       ok: false;
       error: string;
     };
 
-function normalizeRankedItems(data: RecommendResponse): RankedItem[] {
-  if (!data.ok) {
-    throw new Error(data.error);
-  }
-
-  if ("result" in data) {
-    return data.result.map((item, index) => ({
-      id: item.id,
-      rank: item.rank ?? index + 1,
-    }));
-  }
-
-  return data.topIds.map((id, index) => ({
-    id,
-    rank: index + 1,
-  }));
-}
-
 export async function requestRecommendation(
   input: TasteInput | UserPreferences
-): Promise<RankedItem[]> {
+): Promise<RecommendationItem[]> {
   const res = await fetch(`${WORKER_BASE_URL}/recommend`, {
     method: "POST",
     headers: {
@@ -70,7 +48,26 @@ export async function requestRecommendation(
   }
 
   const data = (await res.json()) as RecommendResponse;
-  return normalizeRankedItems(data);
+
+  if (!data.ok) {
+    throw new Error(data.error);
+  }
+
+  return data.result.map((item) => {
+    const name = item.name ?? `柑橘ID ${item.id}`;
+
+    return {
+      id: item.id,
+      rank: item.rank,
+      name,
+      description: "この柑橘の説明文は現在準備中です。",
+      imageUrl: "/other_images/no_image.png",
+      features: item.features ?? input,
+      amazonUrl: buildAmazonUrl(name),
+      rakutenUrl: buildRakutenUrl(name),
+      satofuruUrl: buildSatofuruUrl(name),
+    };
+  });
 }
 
 export async function appendDiagnosisLog(

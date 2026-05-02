@@ -10,6 +10,7 @@ import {
   buildRakutenUrl,
   buildSatofuruUrl,
 } from "@/lib/api";
+import { CitrusImage } from "@/components/CitrusImage";
 import type { RecommendationItem } from "@/lib/types";
 
 export default function OutputLoginPage() {

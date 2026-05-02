@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/lib/context";
+import { CitrusImage } from "@/components/CitrusImage";
 import type { RecommendationItem } from "@/lib/types";
 
 export default function OutputNoLoginPage() {
@@ -71,10 +72,10 @@ export default function OutputNoLoginPage() {
 
             <div className="resultGrid">
               <div className="resultImageWrap">
-                <img
-                  className="resultImage"
-                  src={item.imageUrl}
+                <CitrusImage
+                  id={item.id}
                   alt={item.name}
+                  className="resultImage"
                 />
               </div>
 
