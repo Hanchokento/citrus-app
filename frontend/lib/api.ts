@@ -1,4 +1,4 @@
-import type { TasteInput, RankedItem } from "./types";
+import type { RankedItem, TasteInput } from "./types";
 
 const WORKER_BASE_URL =
   process.env.NEXT_PUBLIC_WORKER_BASE_URL || "http://localhost:8787";
@@ -7,9 +7,9 @@ export async function requestRecommendation(input: TasteInput): Promise<RankedIt
   const res = await fetch(`${WORKER_BASE_URL}/recommend`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(input)
+    body: JSON.stringify(input),
   });
 
   if (!res.ok) {
@@ -17,6 +17,5 @@ export async function requestRecommendation(input: TasteInput): Promise<RankedIt
   }
 
   const data = await res.json();
-
   return data.result;
 }
