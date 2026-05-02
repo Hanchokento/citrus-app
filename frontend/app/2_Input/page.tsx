@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/lib/context";
 import { buildMockRecommendationsFromRankedItems } from "@/lib/mock-data";
-import { requestRecommendation } from "@/lib/api";
+import { appendDiagnosisLog, requestRecommendation } from "@/lib/api";
 import type { TasteInput, UserPreferences } from "@/lib/types";
 
 type TasteKey = keyof TasteInput;
@@ -163,6 +163,17 @@ export default function InputPage() {
       setTopIds(topIds, sessionId);
 
       sessionStorage.setItem("citrus_recommendations", JSON.stringify(recommendations));
+
+      await appendDiagnosisLog({
+        sessionId,
+        userId,
+        inputJson: prefs,
+        result: rankedItems.map((item) => ({
+          id: item.id,
+          rank: item.rank,
+        })),
+        timestamp: new Date().toISOString(),
+      });
 
       router.push(isLoggedIn ? "/3_OutputLogin" : "/3_OutputNoLogin");
     } catch (error) {

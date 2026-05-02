@@ -1,5 +1,7 @@
 // worker/src/index.ts
+
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { recommendRoute } from "./routes/recommend";
 import { diagnosisLogRoute } from "./routes/diagnosis-log";
 import { clickLogRoute } from "./routes/click-log";
@@ -15,6 +17,15 @@ export type Env = {
 };
 
 const app = new Hono<{ Bindings: Env }>();
+
+app.use(
+  "*",
+  cors({
+    origin: "*",
+    allowHeaders: ["Content-Type", "Authorization"],
+    allowMethods: ["GET", "POST", "OPTIONS"],
+  })
+);
 
 app.get("/", (c) => {
   return c.json({
