@@ -183,3 +183,51 @@ export function getMockRecommendations(input: TasteInput): RecommendationItem[] 
     };
   });
 }
+
+export function buildMockRecommendationsFromRankedItems(
+  rankedItems: { id: number; rank: number }[],
+  fallbackInput: TasteInput
+): RecommendationItem[] {
+  const fallbackItems = getMockRecommendations(fallbackInput);
+
+  return rankedItems.map((rankedItem) => {
+    const feature = MOCK_FEATURES.find((item) => item.id === rankedItem.id);
+    const detail = MOCK_DETAILS.find((item) => item.id === rankedItem.id);
+    const fallback = fallbackItems.find((item) => item.rank === rankedItem.rank);
+
+    if (!feature || !detail) {
+      return {
+        id: rankedItem.id,
+        rank: rankedItem.rank,
+        name: fallback?.name ?? `柑橘ID ${rankedItem.id}`,
+        description:
+          fallback?.description ??
+          "R2の推薦結果に対応する詳細データは、現在フロント側では準備中です。",
+        imageUrl: fallback?.imageUrl ?? "/other_images/no_image.png",
+        features: fallback?.features ?? fallbackInput,
+        amazonUrl: fallback?.amazonUrl ?? buildAmazonUrl(`柑橘 ${rankedItem.id}`),
+        rakutenUrl: fallback?.rakutenUrl ?? buildRakutenUrl(`柑橘 ${rankedItem.id}`),
+        satofuruUrl: fallback?.satofuruUrl ?? buildSatofuruUrl(`柑橘 ${rankedItem.id}`),
+      };
+    }
+
+    return {
+      id: feature.id,
+      rank: rankedItem.rank,
+      name: detail.name,
+      description: detail.description,
+      imageUrl: detail.imageUrl ?? "/other_images/no_image.png",
+      features: {
+        brix: feature.brix,
+        acid: feature.acid,
+        bitterness: feature.bitterness,
+        aroma: feature.aroma,
+        moisture: feature.moisture,
+        texture: feature.texture,
+      },
+      amazonUrl: buildAmazonUrl(detail.name),
+      rakutenUrl: buildRakutenUrl(detail.name),
+      satofuruUrl: buildSatofuruUrl(detail.name),
+    };
+  });
+}

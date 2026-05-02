@@ -12,10 +12,14 @@ import type {
 const WORKER_BASE_URL =
   process.env.NEXT_PUBLIC_WORKER_BASE_URL || "http://localhost:8787";
 
+type WorkerRankedItem = RankedItem & {
+  score?: number;
+};
+
 type RecommendResponse =
   | {
       ok: true;
-      result: RankedItem[];
+      result: WorkerRankedItem[];
     }
   | {
       ok: true;
@@ -24,7 +28,10 @@ type RecommendResponse =
 
 function normalizeRankedItems(data: RecommendResponse): RankedItem[] {
   if ("result" in data) {
-    return data.result;
+    return data.result.map((item, index) => ({
+      id: item.id,
+      rank: item.rank ?? index + 1,
+    }));
   }
 
   return data.topIds.map((id, index) => ({

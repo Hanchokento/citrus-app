@@ -4,7 +4,8 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/lib/context";
-import { getMockRecommendations } from "@/lib/mock-data";
+import { buildMockRecommendationsFromRankedItems } from "@/lib/mock-data";
+import { requestRecommendation } from "@/lib/api";
 import type { TasteInput, UserPreferences } from "@/lib/types";
 
 type TasteKey = keyof TasteInput;
@@ -136,7 +137,7 @@ export default function InputPage() {
     setError("");
   }
 
-  function submit() {
+  async function submit() {
     if (!isComplete) {
       setError("未入力の項目があります。迷う項目は「こだわりなしで埋める」を使っても大丈夫です。");
       return;
@@ -149,16 +150,25 @@ export default function InputPage() {
       userId,
     };
 
-    const recommendations = getMockRecommendations(input);
-    const topIds = recommendations.map((item) => item.id);
-    const sessionId = crypto.randomUUID();
+    try {
+      const rankedItems = await requestRecommendation(input);
+      const recommendations = buildMockRecommendationsFromRankedItems(
+        rankedItems,
+        input
+      );
+      const topIds = rankedItems.map((item) => item.id);
+      const sessionId = crypto.randomUUID();
 
-    setUserPreferences(prefs);
-    setTopIds(topIds, sessionId);
+      setUserPreferences(prefs);
+      setTopIds(topIds, sessionId);
 
-    sessionStorage.setItem("citrus_recommendations", JSON.stringify(recommendations));
+      sessionStorage.setItem("citrus_recommendations", JSON.stringify(recommendations));
 
-    router.push(isLoggedIn ? "/3_OutputLogin" : "/3_OutputNoLogin");
+      router.push(isLoggedIn ? "/3_OutputLogin" : "/3_OutputNoLogin");
+    } catch (error) {
+      console.error(error);
+      setError("推薦計算に失敗しました。時間をおいてもう一度お試しください。");
+    }
   }
 
   return (
