@@ -1,20 +1,41 @@
-import Link from "next/link";
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useApp } from "@/lib/context";
 
 export default function TopPage() {
+  const router = useRouter();
+  const { isLoggedIn } = useApp();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.replace("/1_TopLogin");
+    }
+  }, [isLoggedIn, router]);
+
   return (
-    <main className="pageShell centerShell">
-      <section className="heroCard">
-        <h1 className="heroTitle">柑橘類の推薦システム</h1>
-        <p className="heroLead">あなたにぴったりの品種を紹介します</p>
+    <main className="topPage">
+      <section className="topHeroCard">
+        <h1>柑橘類の推薦システム</h1>
+        <p>あなたにぴったりの品種を紹介します</p>
 
-        <div className="buttonRow">
-          <Link className="primaryButton" href="/2_Input">
+        <div className="topButtonRow">
+          <button
+            className="topPrimaryButton"
+            type="button"
+            onClick={() => router.push("/2_Input")}
+          >
             🍊 お試しで推薦してもらう
-          </Link>
+          </button>
 
-          <Link className="secondaryButton" href="/3_Login">
+          <button
+            className="topSecondaryButton"
+            type="button"
+            onClick={() => router.push("/3_Login")}
+          >
             ログイン
-          </Link>
+          </button>
         </div>
       </section>
     </main>
