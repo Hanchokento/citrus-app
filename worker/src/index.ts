@@ -14,6 +14,7 @@ export type Env = {
   LINE_CHANNEL_ID?: string;
   LINE_CHANNEL_SECRET?: string;
   LINE_REDIRECT_URI?: string;
+  FRONTEND_BASE_URL?: string;
 };
 
 const app = new Hono<{ Bindings: Env }>();
