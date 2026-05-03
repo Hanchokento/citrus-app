@@ -23,8 +23,45 @@ export const lineOAuthRoutes = new Hono<{ Bindings: Bindings }>();
 
 const LINE_AUTHORIZE_URL = "https://access.line.me/oauth2/v2.1/authorize";
 const LINE_TOKEN_URL = "https://api.line.me/oauth2/v2.1/token";
+const LINE_VERIFY_URL = "https://api.line.me/oauth2/v2.1/verify";
 const STATE_COOKIE_NAME = "line_oauth_state";
 const NONCE_COOKIE_NAME = "line_oauth_nonce";
+
+type LineVerifyResponse = {
+  iss?: string;
+  sub?: string;
+  aud?: string;
+  exp?: number;
+  iat?: number;
+  nonce?: string;
+  name?: string;
+  picture?: string;
+  email?: string;
+};
+
+async function verifyLineIdToken(
+  idToken: string,
+  channelId: string,
+): Promise<LineVerifyResponse> {
+  const res = await fetch(LINE_VERIFY_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      id_token: idToken,
+      client_id: channelId,
+    }),
+  });
+
+  if (!res.ok) {
+    const detail = await res.text();
+    console.error("LINE verify id_token error:", detail);
+    throw new Error(`Failed to verify LINE ID token: HTTP ${res.status}`);
+  }
+
+  return (await res.json()) as LineVerifyResponse;
+}
 
 function getRequiredEnv(value: string | undefined, name: string): string {
   if (!value) {
@@ -327,8 +364,10 @@ lineOAuthRoutes.get("/callback", async (c) => {
       );
     }
 
-    const payload = await verifyHs256Jwt(tokenJson.id_token, channelSecret);
+    // Use LINE's official ID token verification API to get profile data
+    const payload = await verifyLineIdToken(tokenJson.id_token, channelId);
 
+    // Validate the verified payload
     if (payload.iss !== "https://access.line.me") {
       throw new Error("Invalid ID token issuer");
     }
