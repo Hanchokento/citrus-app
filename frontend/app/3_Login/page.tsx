@@ -1,13 +1,21 @@
 "use client";
 // frontend/app/3_Login/page.tsx
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/lib/context";
 
+const LINE_LOGIN_URL = "https://citrus-app-ts.hmkt0520.workers.dev/auth/line";
+
 export default function LoginPage() {
   const router = useRouter();
-  const { isLoggedIn, loginWithLine } = useApp();
+  const { isLoggedIn } = useApp();
+  const [lineLoginError, setLineLoginError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setLineLoginError(params.get("lineLoginError"));
+  }, []);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -15,15 +23,8 @@ export default function LoginPage() {
     }
   }, [isLoggedIn, router]);
 
-  function handleMockLogin() {
-    loginWithLine({
-      userId: "mock_line_user_001",
-      userName: "テストユーザー",
-      userPicture: null,
-      authProvider: "LINE mock",
-    });
-
-    router.push("/1_TopLogin");
+  function handleLineLogin() {
+    window.location.href = LINE_LOGIN_URL;
   }
 
   return (
@@ -47,16 +48,22 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <div className="loginDevNotice">
-          <strong>開発中：</strong>
-          現在はLINE OAuth本実装前のため、ダミーアカウントで動作中。
-        </div>
+        {lineLoginError ? (
+          <div className="loginDevNotice">
+            <strong>LINEログインに失敗しました：</strong>
+            {lineLoginError}
+          </div>
+        ) : (
+          <div className="loginDevNotice">
+            LINEアカウントでログインします。
+          </div>
+        )}
 
         <div className="topButtonRow loginButtonRow">
           <button
             className="lineLoginButton"
             type="button"
-            onClick={handleMockLogin}
+            onClick={handleLineLogin}
           >
             <svg
               width="20"
