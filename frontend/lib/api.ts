@@ -96,7 +96,8 @@ export async function appendDiagnosisLog(
 export function buildClickLogUrl(
   sessionId: string | null,
   slot: string,
-  destination: string
+  destination: string,
+  userId?: string | null
 ): string {
   if (!sessionId) {
     return destination;
@@ -107,6 +108,10 @@ export function buildClickLogUrl(
     slot,
     to: destination,
   });
+
+  if (userId) {
+    params.set("user_id", userId);
+  }
 
   return `${WORKER_BASE_URL}/click?${params.toString()}`;
 }

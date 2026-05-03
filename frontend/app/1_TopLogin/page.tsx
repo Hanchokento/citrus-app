@@ -1,7 +1,7 @@
 "use client";
 // frontend/app/1_TopLogin/page.tsx
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/lib/context";
 
@@ -17,8 +17,16 @@ export default function TopLoginPage() {
   } = useApp();
 
   const [isCheckingLineCallback, setIsCheckingLineCallback] = useState(true);
+  const callbackProcessedRef = useRef(false);
 
+  // LINE callback processing - runs once on mount
   useEffect(() => {
+    // Prevent double processing
+    if (callbackProcessedRef.current) {
+      setIsCheckingLineCallback(false);
+      return;
+    }
+
     const params = new URLSearchParams(window.location.search);
 
     const callbackAuthProvider = params.get("authProvider");
@@ -27,6 +35,8 @@ export default function TopLoginPage() {
     const callbackUserPicture = params.get("userPicture");
 
     if (callbackAuthProvider === "line" && callbackUserId) {
+      callbackProcessedRef.current = true;
+
       loginWithLine({
         userId: callbackUserId,
         userName: callbackUserName || "LINEユーザー",
@@ -34,12 +44,15 @@ export default function TopLoginPage() {
         authProvider: "LINE",
       });
 
+      // Clean up URL after processing
       window.history.replaceState(null, "", "/1_TopLogin");
     }
 
     setIsCheckingLineCallback(false);
-  }, [loginWithLine]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  // Redirect to 1_Top if not logged in (after callback check completes)
   useEffect(() => {
     if (!isCheckingLineCallback && !isLoggedIn) {
       router.replace("/1_Top");

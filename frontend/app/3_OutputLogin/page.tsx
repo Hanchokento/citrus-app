@@ -15,7 +15,7 @@ import type { RecommendationItem } from "@/lib/types";
 
 export default function OutputLoginPage() {
   const router = useRouter();
-  const { isLoggedIn, topIds, sessionId } = useApp();
+  const { isLoggedIn, topIds, sessionId, userId } = useApp();
   const [items, setItems] = useState<RecommendationItem[]>([]);
 
   useEffect(() => {
@@ -81,19 +81,22 @@ export default function OutputLoginPage() {
           const amazonUrl = buildClickLogUrl(
             sessionId,
             `${item.rank}_a`,
-            item.amazonUrl || buildAmazonUrl(item.name)
+            item.amazonUrl || buildAmazonUrl(item.name),
+            userId
           );
 
           const rakutenUrl = buildClickLogUrl(
             sessionId,
             `${item.rank}_r`,
-            item.rakutenUrl || buildRakutenUrl(item.name)
+            item.rakutenUrl || buildRakutenUrl(item.name),
+            userId
           );
 
           const satofuruUrl = buildClickLogUrl(
             sessionId,
             `${item.rank}_s`,
-            item.satofuruUrl || buildSatofuruUrl(item.name)
+            item.satofuruUrl || buildSatofuruUrl(item.name),
+            userId
           );
 
           return (
