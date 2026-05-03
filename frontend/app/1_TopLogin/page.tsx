@@ -17,11 +17,10 @@ export default function TopLoginPage() {
   } = useApp();
 
   const [isCheckingLineCallback, setIsCheckingLineCallback] = useState(true);
+  const [hasLineCallbackLogin, setHasLineCallbackLogin] = useState(false);
   const callbackProcessedRef = useRef(false);
 
-  // LINE callback processing - runs once on mount
   useEffect(() => {
-    // Prevent double processing
     if (callbackProcessedRef.current) {
       setIsCheckingLineCallback(false);
       return;
@@ -36,6 +35,7 @@ export default function TopLoginPage() {
 
     if (callbackAuthProvider === "line" && callbackUserId) {
       callbackProcessedRef.current = true;
+      setHasLineCallbackLogin(true);
 
       loginWithLine({
         userId: callbackUserId,
@@ -44,7 +44,6 @@ export default function TopLoginPage() {
         authProvider: "LINE",
       });
 
-      // Clean up URL after processing
       window.history.replaceState(null, "", "/1_TopLogin");
     }
 
@@ -52,12 +51,11 @@ export default function TopLoginPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Redirect to 1_Top if not logged in (after callback check completes)
   useEffect(() => {
-    if (!isCheckingLineCallback && !isLoggedIn) {
+    if (!isCheckingLineCallback && !isLoggedIn && !hasLineCallbackLogin) {
       router.replace("/1_Top");
     }
-  }, [isCheckingLineCallback, isLoggedIn, router]);
+  }, [isCheckingLineCallback, isLoggedIn, hasLineCallbackLogin, router]);
 
   function handleLogout() {
     logout();
