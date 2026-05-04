@@ -1,6 +1,7 @@
 "use client";
 // frontend/components/TasteRadarChart.tsx
 
+import { useEffect, useMemo, useState } from "react";
 import type { TasteInput } from "@/lib/types";
 
 type TasteRadarChartProps = {
@@ -22,9 +23,14 @@ const AXES: {
 const CENTER = 100;
 const RADIUS = 64;
 const MAX_VALUE = 6;
+const ANIMATION_DURATION_MS = 760;
 
 function clampValue(value: number) {
   return Math.max(0, Math.min(MAX_VALUE, value));
+}
+
+function easeOutCubic(t: number) {
+  return 1 - Math.pow(1 - t, 3);
 }
 
 function pointFor(index: number, value: number) {
@@ -64,6 +70,51 @@ function gridPointsFor(level: number) {
 }
 
 export default function TasteRadarChart({ features }: TasteRadarChartProps) {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    let animationFrameId = 0;
+    const start = performance.now();
+
+    function animate(now: number) {
+      const elapsed = now - start;
+      const linearProgress = Math.min(elapsed / ANIMATION_DURATION_MS, 1);
+      const easedProgress = easeOutCubic(linearProgress);
+
+      setProgress(easedProgress);
+
+      if (linearProgress < 1) {
+        animationFrameId = requestAnimationFrame(animate);
+      }
+    }
+
+    setProgress(0);
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [
+    features.brix,
+    features.acid,
+    features.bitterness,
+    features.aroma,
+    features.moisture,
+    features.texture,
+  ]);
+
+  const animatedFeatures = useMemo<TasteInput>(
+    () => ({
+      brix: features.brix * progress,
+      acid: features.acid * progress,
+      bitterness: features.bitterness * progress,
+      aroma: features.aroma * progress,
+      moisture: features.moisture * progress,
+      texture: features.texture * progress,
+    }),
+    [features, progress],
+  );
+
   return (
     <div className="tasteRadarChart" aria-label="柑橘の味特徴レーダーチャート">
       <svg viewBox="0 0 200 200" role="img">
@@ -91,7 +142,7 @@ export default function TasteRadarChart({ features }: TasteRadarChartProps) {
         })}
 
         <polygon
-          points={polygonPointsFor(features)}
+          points={polygonPointsFor(animatedFeatures)}
           className="tasteRadarArea"
         />
 

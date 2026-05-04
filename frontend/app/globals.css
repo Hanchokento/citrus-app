@@ -1225,3 +1225,46 @@ p {
   fill: #c2410c;
   font-weight: 700;
 }
+
+/* Taste radar chart */
+.tasteRadarChart {
+  width: 100%;
+  max-width: 230px;
+  margin-top: 10px;
+}
+
+.tasteRadarChart svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.tasteRadarGrid {
+  fill: none;
+  stroke: #fed7aa;
+  stroke-width: 1;
+}
+
+.tasteRadarAxis {
+  stroke: #fdba74;
+  stroke-width: 1;
+}
+
+.tasteRadarArea {
+  fill: rgba(249, 115, 22, 0.24);
+  stroke: #f97316;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.tasteRadarLabel {
+  font-size: 10px;
+  fill: #9a3412;
+  font-weight: 700;
+}
+
+.tasteRadarValueLabel {
+  font-size: 10px;
+  fill: #c2410c;
+  font-weight: 700;
+}
