@@ -19,6 +19,13 @@ type LineIdTokenPayload = {
   picture?: string;
 };
 
+type LineProfileResponse = {
+  userId?: string;
+  displayName?: string;
+  pictureUrl?: string;
+  statusMessage?: string;
+};
+
 export const lineOAuthRoutes = new Hono<{ Bindings: Bindings }>();
 
 const LINE_AUTHORIZE_URL = "https://access.line.me/oauth2/v2.1/authorize";
@@ -162,6 +169,25 @@ function deleteCookie(name: string): string {
     "Secure",
     "SameSite=Lax",
   ].join("; ");
+}
+
+async function fetchLineProfile(
+  accessToken: string,
+): Promise<LineProfileResponse> {
+  const res = await fetch("https://api.line.me/v2/profile", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!res.ok) {
+    const detail = await res.text();
+    console.error("LINE profile error:", detail);
+    throw new Error(`Failed to fetch LINE profile: HTTP ${res.status}`);
+  }
+
+  return (await res.json()) as LineProfileResponse;
 }
 
 async function verifyHs256Jwt(
@@ -351,6 +377,7 @@ lineOAuthRoutes.get("/callback", async (c) => {
     }
 
     const tokenJson = (await tokenResponse.json()) as {
+      access_token?: string;
       id_token?: string;
     };
 
@@ -364,8 +391,23 @@ lineOAuthRoutes.get("/callback", async (c) => {
       );
     }
 
-    // Use LINE's official ID token verification API to get profile data
+    // Use LINE's official ID token verification API to validate the ID token.
     const payload = await verifyLineIdToken(tokenJson.id_token, channelId);
+
+    // Fetch LINE profile with access_token to reliably get displayName and pictureUrl.
+    const profile = tokenJson.access_token
+      ? await fetchLineProfile(tokenJson.access_token)
+      : null;
+
+    console.log("LINE profile fields", {
+      hasPayloadSub: Boolean(payload.sub),
+      hasPayloadName: Boolean(payload.name),
+      hasPayloadPicture: Boolean(payload.picture),
+      hasAccessToken: Boolean(tokenJson.access_token),
+      hasProfileUserId: Boolean(profile?.userId),
+      hasProfileDisplayName: Boolean(profile?.displayName),
+      hasProfilePictureUrl: Boolean(profile?.pictureUrl),
+    });
 
     // Validate the verified payload
     if (payload.iss !== "https://access.line.me") {
@@ -389,11 +431,19 @@ lineOAuthRoutes.get("/callback", async (c) => {
       throw new Error("ID token does not include sub");
     }
 
+    const lineUserId = profile?.userId || payload.sub;
+    const lineUserName = profile?.displayName || payload.name || "LINEユーザー";
+    const lineUserPicture = profile?.pictureUrl || payload.picture || "";
+
+    if (!lineUserId) {
+      throw new Error("LINE user ID was not found");
+    }
+
     const response = c.redirect(
       buildFrontendRedirectUrl(frontendBaseUrl, {
-        userId: payload.sub,
-        userName: payload.name || "LINEユーザー",
-        userPicture: payload.picture || "",
+        userId: lineUserId,
+        userName: lineUserName,
+        userPicture: lineUserPicture,
       }),
       302,
     );
