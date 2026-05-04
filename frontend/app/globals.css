@@ -1268,3 +1268,28 @@ p {
   fill: #c2410c;
   font-weight: 700;
 }
+
+/* Radar chart layout tuning */
+.tasteRadarChart {
+  width: 100%;
+  max-width: 290px;
+  margin: 2px auto 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tasteRadarChart svg {
+  width: 100%;
+  max-width: 260px;
+  height: auto;
+  display: block;
+}
+
+.tasteRadarLabel {
+  font-size: 11px;
+}
+
+.tasteRadarValueLabel {
+  font-size: 11px;
+}
