@@ -12,6 +12,7 @@ import {
 } from "@/lib/api";
 import { CitrusImage } from "@/components/CitrusImage";
 import type { RecommendationItem } from "@/lib/types";
+import TasteRadarChart from "@/components/TasteRadarChart";
 
 export default function OutputLoginPage() {
   const router = useRouter();
@@ -119,14 +120,7 @@ export default function OutputLoginPage() {
 
                 <div className="featurePanel">
                   <h3>特徴</h3>
-                  <div className="radarBox">
-                    <div className="radarItem">甘さ {item.features.brix}</div>
-                    <div className="radarItem">酸味 {item.features.acid}</div>
-                    <div className="radarItem">苦味 {item.features.bitterness}</div>
-                    <div className="radarItem">香り {item.features.aroma}</div>
-                    <div className="radarItem">果汁 {item.features.moisture}</div>
-                    <div className="radarItem">食感 {item.features.texture}</div>
-                  </div>
+                  <TasteRadarChart features={item.features} />
                 </div>
 
                 <div className="linkColumn">
