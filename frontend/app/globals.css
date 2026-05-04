@@ -1335,3 +1335,141 @@ p {
     width: min(303px, 92vw);
   }
 }
+
+/* Official LINE login button size and hit-area tuning */
+.lineLoginImageButton {
+  width: 200px;
+  height: 58px;
+  aspect-ratio: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  display: inline-block;
+  line-height: 0;
+}
+
+.lineLoginImage {
+  display: block;
+  width: 200px;
+  height: 58px;
+  background-image: url("/other_images/line_login/btn_login_base.png");
+  background-size: 200px 58px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.lineLoginImageButton:hover .lineLoginImage {
+  background-image: url("/other_images/line_login/btn_login_hover.png");
+}
+
+.lineLoginImageButton:active .lineLoginImage {
+  background-image: url("/other_images/line_login/btn_login_press.png");
+}
+
+.lineLoginImageButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+@media (max-width: 640px) {
+  .lineLoginImageButton,
+  .lineLoginImage {
+    width: min(200px, 80vw);
+    height: auto;
+    aspect-ratio: 303 / 88;
+    background-size: contain;
+  }
+}
+
+/* Official LINE login button size and hit-area tuning */
+.lineLoginImageButton {
+  width: 200px;
+  height: 58px;
+  aspect-ratio: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  display: inline-block;
+  line-height: 0;
+}
+
+.lineLoginImage {
+  display: block;
+  width: 200px;
+  height: 58px;
+  background-image: url("/other_images/line_login/btn_login_base.png");
+  background-size: 200px 58px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.lineLoginImageButton:hover .lineLoginImage {
+  background-image: url("/other_images/line_login/btn_login_hover.png");
+}
+
+.lineLoginImageButton:active .lineLoginImage {
+  background-image: url("/other_images/line_login/btn_login_press.png");
+}
+
+.lineLoginImageButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+@media (max-width: 640px) {
+  .lineLoginImageButton,
+  .lineLoginImage {
+    width: min(200px, 80vw);
+    height: auto;
+    aspect-ratio: 303 / 88;
+    background-size: contain;
+  }
+}
+
+/* Official LINE login button size and hit-area tuning */
+.lineLoginImageButton {
+  width: 200px;
+  height: 58px;
+  aspect-ratio: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  display: inline-block;
+  line-height: 0;
+}
+
+.lineLoginImage {
+  display: block;
+  width: 200px;
+  height: 58px;
+  background-image: url("/other_images/line_login/btn_login_base.png");
+  background-size: 200px 58px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.lineLoginImageButton:hover .lineLoginImage {
+  background-image: url("/other_images/line_login/btn_login_hover.png");
+}
+
+.lineLoginImageButton:active .lineLoginImage {
+  background-image: url("/other_images/line_login/btn_login_press.png");
+}
+
+.lineLoginImageButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+@media (max-width: 640px) {
+  .lineLoginImageButton,
+  .lineLoginImage {
+    width: min(200px, 80vw);
+    height: auto;
+    aspect-ratio: 303 / 88;
+    background-size: contain;
+  }
+}
