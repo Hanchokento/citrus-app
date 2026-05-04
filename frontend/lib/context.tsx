@@ -63,11 +63,7 @@ function saveState(state: AppState) {
 }
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<AppState>(INITIAL_STATE);
-
-  useEffect(() => {
-    setState(loadState());
-  }, []);
+  const [state, setState] = useState<AppState>(() => loadState());
 
   useEffect(() => {
     saveState(state);
@@ -89,11 +85,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const loginWithLine = useCallback((user: LoginUser) => {
-    setState((prev) => ({
-      ...prev,
-      isLoggedIn: true,
-      ...user,
-    }));
+    setState((prev) => {
+      const next = {
+        ...prev,
+        isLoggedIn: true,
+        ...user,
+      };
+
+      saveState(next);
+      return next;
+    });
   }, []);
 
   const logout = useCallback(() => {
