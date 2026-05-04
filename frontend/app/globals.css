@@ -1293,3 +1293,45 @@ p {
 .tasteRadarValueLabel {
   font-size: 11px;
 }
+
+/* Official LINE login button image */
+.lineLoginImageButton {
+  width: min(303px, 100%);
+  aspect-ratio: 303 / 44;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lineLoginImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-image: url("/other_images/line_login/btn_login_base.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.lineLoginImageButton:hover .lineLoginImage {
+  background-image: url("/other_images/line_login/btn_login_hover.png");
+}
+
+.lineLoginImageButton:active .lineLoginImage {
+  background-image: url("/other_images/line_login/btn_login_press.png");
+}
+
+.lineLoginImageButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+@media (max-width: 640px) {
+  .lineLoginImageButton {
+    width: min(303px, 92vw);
+  }
+}
