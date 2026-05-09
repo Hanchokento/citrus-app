@@ -6,6 +6,7 @@ node_modules/
 .next/
 out/
 dist/
+*.tsbuildinfo
 
 # Local env files
 .env
@@ -19,6 +20,9 @@ dist/
 # Logs
 *.log
 
+# Test / coverage
+coverage/
+
 # Python legacy
 __pycache__/
 *.pyc
@@ -28,3 +32,7 @@ venv/
 # Cloudflare local
 .wrangler/
 .dev.vars
+.dev.vars*
+
+# Vercel / v0 local settings
+.vercel/
