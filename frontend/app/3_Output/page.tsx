@@ -1,5 +1,5 @@
 "use client";
-// frontend/app/3_OutputLogin/page.tsx
+// frontend/app/3_Output/page.tsx
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -11,23 +11,18 @@ import {
   buildSatofuruUrl,
 } from "@/lib/api";
 import { CitrusImage } from "@/components/CitrusImage";
-import type { RecommendationItem } from "@/lib/types";
 import TasteRadarChart from "@/components/TasteRadarChart";
+import type { RecommendationItem } from "@/lib/types";
 
-export default function OutputLoginPage() {
+export default function OutputPage() {
   const router = useRouter();
-  const { isLoggedIn, topIds, sessionId, userId } = useApp();
+  const { sessionId } = useApp();
   const [items, setItems] = useState<RecommendationItem[]>([]);
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      router.replace("/3_OutputNoLogin");
-      return;
-    }
-
     const raw = sessionStorage.getItem("citrus_recommendations");
 
-    if (!raw || topIds.length === 0) {
+    if (!raw) {
       router.replace("/2_Input");
       return;
     }
@@ -37,7 +32,7 @@ export default function OutputLoginPage() {
     } catch {
       router.replace("/2_Input");
     }
-  }, [isLoggedIn, router, topIds.length]);
+  }, [router]);
 
   if (items.length === 0) {
     return (
@@ -71,7 +66,7 @@ export default function OutputLoginPage() {
         <button
           className="secondarySmallButton"
           type="button"
-          onClick={() => router.push("/1_TopLogin")}
+          onClick={() => router.push("/1_Top")}
         >
           トップへ
         </button>
@@ -83,21 +78,18 @@ export default function OutputLoginPage() {
             sessionId,
             `${item.rank}_a`,
             item.amazonUrl || buildAmazonUrl(item.name),
-            userId
           );
 
           const rakutenUrl = buildClickLogUrl(
             sessionId,
             `${item.rank}_r`,
             item.rakutenUrl || buildRakutenUrl(item.name),
-            userId
           );
 
           const satofuruUrl = buildClickLogUrl(
             sessionId,
             `${item.rank}_s`,
             item.satofuruUrl || buildSatofuruUrl(item.name),
-            userId
           );
 
           return (
@@ -169,7 +161,7 @@ export default function OutputLoginPage() {
         <button
           className="topSecondaryButton"
           type="button"
-          onClick={() => router.push("/1_TopLogin")}
+          onClick={() => router.push("/1_Top")}
         >
           トップへ戻る
         </button>

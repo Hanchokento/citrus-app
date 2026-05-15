@@ -172,7 +172,7 @@ export default function InputPage() {
         console.warn("Failed to append diagnosis log", logError);
       });
 
-      router.push(isLoggedIn ? "/3_OutputLogin" : "/3_OutputNoLogin");
+      router.push("/3_Output");
     } catch (error) {
       console.error(error);
       setError("推薦計算に失敗しました。時間をおいてもう一度お試しください。");

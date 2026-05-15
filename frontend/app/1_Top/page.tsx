@@ -1,19 +1,10 @@
 "use client";
 // frontend/app/1_Top/page.tsx
 
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useApp } from "@/lib/context";
 
 export default function TopPage() {
   const router = useRouter();
-  const { isLoggedIn } = useApp();
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      router.replace("/1_TopLogin");
-    }
-  }, [isLoggedIn, router]);
 
   return (
     <main className="topPage">
@@ -28,14 +19,6 @@ export default function TopPage() {
             onClick={() => router.push("/2_Input")}
           >
             🍊 お試しで推薦してもらう
-          </button>
-
-          <button
-            className="topSecondaryButton"
-            type="button"
-            onClick={() => router.push("/3_Login")}
-          >
-            ログイン
           </button>
         </div>
       </section>
