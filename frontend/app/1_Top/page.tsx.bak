@@ -2,6 +2,11 @@
 // frontend/app/1_Top/page.tsx
 
 import { useRouter } from "next/navigation";
+import {
+  buildAmazonUrl,
+  buildRakutenUrl,
+  buildSatofuruUrl,
+} from "@/lib/api";
 import { CitrusImage } from "@/components/CitrusImage";
 import TasteRadarChart from "@/components/TasteRadarChart";
 import type { TasteInput } from "@/lib/types";
@@ -71,6 +76,10 @@ const FEATURES = [
 
 export default function TopPage() {
   const router = useRouter();
+
+  const amazonUrl = buildAmazonUrl(SAMPLE_RESULT.name);
+  const rakutenUrl = buildRakutenUrl(SAMPLE_RESULT.name);
+  const satofuruUrl = buildSatofuruUrl(SAMPLE_RESULT.name);
 
   return (
     <main className="topLanding">
@@ -172,32 +181,38 @@ export default function TopPage() {
                 </div>
 
                 <div className="linkColumn">
-                  <button
-                    className="ecButton ecAmazon topPreviewEcButton"
-                    type="button"
+                  <a
+                    className="ecButton ecAmazon"
+                    href={amazonUrl}
+                    target="_blank"
+                    rel="noreferrer"
                   >
                     Amazonで探す
-                  </button>
+                  </a>
 
-                  <button
-                    className="ecButton ecRakuten topPreviewEcButton"
-                    type="button"
+                  <a
+                    className="ecButton ecRakuten"
+                    href={rakutenUrl}
+                    target="_blank"
+                    rel="noreferrer"
                   >
                     楽天で探す
-                  </button>
+                  </a>
 
-                  <button
-                    className="ecButton ecSatofuru topPreviewEcButton"
-                    type="button"
+                  <a
+                    className="ecButton ecSatofuru"
+                    href={satofuruUrl}
+                    target="_blank"
+                    rel="noreferrer"
                   >
                     ふるさと納税で探す
-                  </button>
+                  </a>
                 </div>
               </div>
             </article>
 
             <p className="topOutputPreviewNote">
-              実際の結果画面では、この形式のカードが上位3品種分表示され、各購入サイトで探せます。
+              実際の結果画面では、この形式のカードが上位3品種分表示されます。
             </p>
           </div>
         </div>
