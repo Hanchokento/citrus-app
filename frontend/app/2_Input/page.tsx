@@ -85,14 +85,14 @@ const HINTS = [
       "ここでの香りは、食べた時に鼻に抜ける風味を指します。数字が大きいほど華やかですが、甘さや酸味とのバランスも大切です。",
   },
   {
-    label: "ジューシーさについて",
-    content:
-      "果汁感を強くしたい場合はジューシーさを高めにしてください。甘さや酸味が低すぎると水っぽく感じることがあります。",
-  },
-  {
     label: "食感について",
     content:
       "ぷちっとした粒感やしっかりした果肉が好きなら高め、口の中でほどける柔らかさが好きなら低めがおすすめです。",
+  },
+  {
+    label: "ジューシーさについて",
+    content:
+      "果汁感を強くしたい場合はジューシーさを高めにしてください。甘さや酸味が低すぎると水っぽく感じることがあります。",
   },
 ];
 
@@ -298,9 +298,6 @@ export default function InputPage() {
 
           <div className="currentSelection">
             <h3>現在の選択</h3>
-            <p className="currentSelectionLead">
-              選んだ好みがレーダーチャートに反映されます。
-            </p>
 
             <TasteRadarChart features={values} />
           </div>
@@ -313,7 +310,7 @@ export default function InputPage() {
           type="button"
           onClick={submit}
         >
-          <span className="recommendActionEyebrow">特徴量ベース</span>
+          <span className="recommendActionEyebrow">自分の好みから</span>
           <span className="recommendActionTitle">
             {isComplete
               ? "あなたの好みに近い柑橘を探す 🍊"

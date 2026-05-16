@@ -1748,3 +1748,28 @@ p {
     font-size: 0.84rem;
   }
 }
+
+/* Hint buttons compact two-column layout */
+.hintButtons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.hintButtons .hintButton {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+/* 5個目だけ余った時は横幅いっぱいにする */
+.hintButtons .hintButton:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 640px) {
+  .hintButtons {
+    grid-template-columns: 1fr;
+  }
+}
