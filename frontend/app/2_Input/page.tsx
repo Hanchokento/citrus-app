@@ -274,7 +274,6 @@ export default function InputPage() {
 
         <aside className="hintCard">
           <h2>柑橘ソムリエのヒント</h2>
-          <p>迷った時は、気になる項目のヒントを開いてください。</p>
 
           <div className="hintButtons">
             {HINTS.map((hint, index) => (
@@ -304,38 +303,39 @@ export default function InputPage() {
             </p>
 
             <TasteRadarChart features={values} />
-
-            <div className="currentSelectionGrid">
-              {INPUT_ITEMS.map((item) => (
-                <div className="currentSelectionChip" key={item.key}>
-                  <span>
-                    {item.emoji} {item.label}
-                  </span>
-                  <strong>{values[item.key] ?? "—"}</strong>
-                </div>
-              ))}
-            </div>
           </div>
         </aside>
       </div>
 
-      <div className="submitArea">
+      <div className="submitArea recommendSubmitArea">
         <button
-          className="primaryButton fullButton"
+          className="recommendActionButton recommendActionPrimary"
           type="button"
           onClick={submit}
         >
-          {isComplete
-            ? "あなたの好みに近い柑橘を探す 🍊"
-            : `あと ${INPUT_ITEMS.length - selectedCount} 項目を選んでください`}
+          <span className="recommendActionEyebrow">特徴量ベース</span>
+          <span className="recommendActionTitle">
+            {isComplete
+              ? "あなたの好みに近い柑橘を探す 🍊"
+              : `あと ${INPUT_ITEMS.length - selectedCount} 項目を選んでください`}
+          </span>
+          <span className="recommendActionText">
+            甘さ・酸味など、選んだ6つの好みに近い品種を探します。
+          </span>
         </button>
 
         <button
-          className="secondaryRecommendationButton fullButton"
+          className="recommendActionButton recommendActionSecondary"
           type="button"
           onClick={submitSimilarPreferenceRecommendation}
         >
-          似た好みの人が選んだ柑橘を探す
+          <span className="recommendActionEyebrow">みんなの傾向から</span>
+          <span className="recommendActionTitle">
+            似た好みの人が選んだ柑橘を探す
+          </span>
+          <span className="recommendActionText">
+            過去の選択傾向をもとにした推薦です。現在準備中です。
+          </span>
         </button>
       </div>
     </main>
