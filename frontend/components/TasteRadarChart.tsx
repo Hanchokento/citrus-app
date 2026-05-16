@@ -80,9 +80,13 @@ export default function TasteRadarChart({ features }: TasteRadarChartProps) {
 
   useEffect(() => {
     let animationFrameId = 0;
-    const start = performance.now();
+    let start = 0;
 
     function animate(now: number) {
+      if (start === 0) {
+        start = now;
+      }
+
       const elapsed = now - start;
       const linearProgress = Math.min(elapsed / ANIMATION_DURATION_MS, 1);
       const easedProgress = easeOutCubic(linearProgress);
@@ -94,7 +98,6 @@ export default function TasteRadarChart({ features }: TasteRadarChartProps) {
       }
     }
 
-    setProgress(0);
     animationFrameId = requestAnimationFrame(animate);
 
     return () => {

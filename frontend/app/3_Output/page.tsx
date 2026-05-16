@@ -17,22 +17,29 @@ import type { RecommendationItem } from "@/lib/types";
 export default function OutputPage() {
   const router = useRouter();
   const { sessionId } = useApp();
-  const [items, setItems] = useState<RecommendationItem[]>([]);
-
-  useEffect(() => {
-    const raw = sessionStorage.getItem("citrus_recommendations");
-
-    if (!raw) {
-      router.replace("/2_Input");
-      return;
+  const [items] = useState<RecommendationItem[]>(() => {
+    if (typeof window === "undefined") {
+      return [];
     }
 
     try {
-      setItems(JSON.parse(raw) as RecommendationItem[]);
+      const raw = sessionStorage.getItem("citrus_recommendations");
+
+      if (!raw) {
+        return [];
+      }
+
+      return JSON.parse(raw) as RecommendationItem[];
     } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    if (items.length === 0) {
       router.replace("/2_Input");
     }
-  }, [router]);
+  }, [items.length, router]);
 
   if (items.length === 0) {
     return (

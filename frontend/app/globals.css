@@ -1773,3 +1773,676 @@ p {
     grid-template-columns: 1fr;
   }
 }
+
+/* Top page single result sample showcase */
+.topSampleShowcase {
+  max-width: 920px;
+  margin: 8px auto 0;
+}
+
+.topSampleFeaturedCard {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.9fr) minmax(0, 1.1fr);
+  gap: 0;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(249, 128, 6, 0.18);
+  box-shadow: 0 14px 34px rgba(146, 64, 14, 0.12);
+  overflow: hidden;
+  animation: topCardReveal 0.5s ease both;
+}
+
+.topSampleFeaturedImageWrap {
+  min-height: 360px;
+  background: #f3e8d4;
+  overflow: hidden;
+}
+
+.topSampleFeaturedImage {
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  object-fit: cover;
+  display: block;
+}
+
+.topSampleFeaturedBody {
+  padding: 32px 32px 34px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+
+.topSampleFeatureArea {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  align-items: center;
+  gap: 20px;
+  margin-top: 8px;
+}
+
+.topSampleExplainBox {
+  border: 1px solid rgba(249, 128, 6, 0.18);
+  background: rgba(255, 255, 255, 0.58);
+  border-radius: 20px;
+  padding: 16px 18px;
+}
+
+.topSampleExplainBox strong {
+  display: block;
+  color: #9a3412;
+  font-size: 0.9rem;
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+
+.topSampleExplainBox p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  font-weight: 650;
+  line-height: 1.75;
+}
+
+@media (max-width: 768px) {
+  .topSampleFeaturedCard {
+    grid-template-columns: 1fr;
+  }
+
+  .topSampleFeaturedImageWrap {
+    min-height: 240px;
+  }
+
+  .topSampleFeaturedImage {
+    min-height: 240px;
+  }
+
+  .topSampleFeaturedBody {
+    padding: 24px 22px 28px;
+  }
+
+  .topSampleFeatureArea {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 14px;
+  }
+
+  .topSampleExplainBox {
+    width: 100%;
+  }
+}
+
+/* ===================================================================
+   TOP LANDING PAGE BASE - /1_Top
+   =================================================================== */
+
+@keyframes topFloatA {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-18px) rotate(6deg); }
+}
+
+@keyframes topFloatB {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(-5deg); }
+}
+
+@keyframes topFloatC {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-22px); }
+}
+
+@keyframes topOrbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(20px, -30px) scale(1.05); }
+  66% { transform: translate(-15px, 20px) scale(0.97); }
+}
+
+@keyframes topHeroFadeIn {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes topCardReveal {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.topLanding {
+  position: relative;
+  overflow: hidden;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.topOrb {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  animation: topOrbFloat linear infinite;
+}
+
+.topOrb1 {
+  width: 480px;
+  height: 480px;
+  top: -120px;
+  right: -100px;
+  background: radial-gradient(circle, rgba(255, 169, 77, 0.18) 0%, transparent 70%);
+  animation-duration: 18s;
+}
+
+.topOrb2 {
+  width: 360px;
+  height: 360px;
+  bottom: 200px;
+  left: -80px;
+  background: radial-gradient(circle, rgba(253, 230, 138, 0.22) 0%, transparent 70%);
+  animation-duration: 24s;
+  animation-delay: -8s;
+}
+
+.topOrb3 {
+  width: 280px;
+  height: 280px;
+  top: 40%;
+  right: 10%;
+  background: radial-gradient(circle, rgba(249, 128, 6, 0.1) 0%, transparent 70%);
+  animation-duration: 20s;
+  animation-delay: -4s;
+}
+
+.topHero {
+  position: relative;
+  z-index: 1;
+  padding: 80px 24px 72px;
+}
+
+.topHeroInner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 48px;
+  animation: topHeroFadeIn 0.7s ease both;
+}
+
+.topHeroContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.topHeroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+  background: rgba(249, 128, 6, 0.12);
+  border: 1px solid rgba(249, 128, 6, 0.25);
+  color: #c2410c;
+  font-size: 0.88rem;
+  font-weight: 800;
+  width: fit-content;
+  letter-spacing: 0.02em;
+}
+
+.topHeroTitle {
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  margin: 0;
+}
+
+.topHeroAccent {
+  background: linear-gradient(120deg, var(--primary-light), var(--primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.topHeroLead {
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  color: var(--text-muted);
+  font-weight: 600;
+  line-height: 1.8;
+  margin: 0;
+}
+
+.topHeroActions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.topHeroNote {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.topHeroVisual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+}
+
+.topHeroOrb {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(
+    circle at 40% 40%,
+    rgba(255, 169, 77, 0.25),
+    rgba(255, 247, 237, 0.4)
+  );
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 24px rgba(249, 128, 6, 0.06),
+    0 0 0 48px rgba(249, 128, 6, 0.03);
+  flex-shrink: 0;
+}
+
+.topEmojiFloat {
+  position: absolute;
+  line-height: 1;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08));
+}
+
+.topEmojiFloat1 {
+  font-size: 3.5rem;
+  top: 16px;
+  left: 50%;
+  margin-left: -28px;
+  animation: topFloatA 4s ease-in-out infinite;
+}
+
+.topEmojiFloat2 {
+  font-size: 3rem;
+  bottom: 24px;
+  left: 18px;
+  animation: topFloatB 5s ease-in-out infinite;
+  animation-delay: -1s;
+}
+
+.topEmojiFloat3 {
+  font-size: 3rem;
+  bottom: 28px;
+  right: 18px;
+  animation: topFloatC 4.5s ease-in-out infinite;
+  animation-delay: -2.5s;
+}
+
+.topEmojiFloat4 {
+  font-size: 2.4rem;
+  top: 50%;
+  left: 8px;
+  margin-top: -19px;
+  animation: topFloatB 6s ease-in-out infinite;
+  animation-delay: -0.5s;
+}
+
+.topCtaButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 32px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(249, 128, 6, 0.3);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  white-space: nowrap;
+}
+
+.topCtaButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(249, 128, 6, 0.38);
+}
+
+.topCtaButtonLarge {
+  padding: 20px 48px;
+  font-size: 1.1rem;
+}
+
+.topSection {
+  position: relative;
+  z-index: 1;
+  padding: 80px 24px;
+}
+
+.topSectionAlt {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 247, 237, 0) 0%,
+    rgba(255, 237, 213, 0.4) 50%,
+    rgba(255, 247, 237, 0) 100%
+  );
+}
+
+.topSectionInner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.topSectionTitle {
+  font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+  font-weight: 800;
+  text-align: center;
+  color: var(--text);
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+
+.topSectionLead {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 48px;
+}
+
+.topStepGrid,
+.topFeatureGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.topStepCard,
+.topFeatureCard {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: 32px 24px;
+  box-shadow: 0 8px 24px rgba(146, 64, 14, 0.08);
+  animation: topCardReveal 0.5s ease both;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.topStepCard {
+  text-align: center;
+}
+
+.topStepCard:hover,
+.topFeatureCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(146, 64, 14, 0.13);
+}
+
+.topStepNumber {
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  color: var(--primary);
+  margin-bottom: 12px;
+  opacity: 0.8;
+}
+
+.topStepEmoji {
+  font-size: 2.6rem;
+  margin-bottom: 14px;
+  line-height: 1;
+}
+
+.topStepTitle,
+.topFeatureTitle {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.topStepDesc,
+.topFeatureDesc {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.75;
+  margin: 0;
+}
+
+.topFeatureEmoji {
+  font-size: 2.2rem;
+  margin-bottom: 14px;
+  line-height: 1;
+}
+
+.topSampleRank {
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+
+.topSampleName {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.topSampleDesc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.topSampleTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.topSampleTag {
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid;
+  font-size: 0.76rem;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.topSampleRadar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+  gap: 4px;
+}
+
+.topSampleRadarLabel {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-light);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.topCtaSection {
+  position: relative;
+  z-index: 1;
+  padding: 80px 24px 100px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 169, 77, 0.15),
+    rgba(249, 128, 6, 0.08)
+  );
+  border-top: 1px solid rgba(249, 128, 6, 0.1);
+}
+
+.topCtaInner {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  animation: topHeroFadeIn 0.6s ease both;
+}
+
+.topCtaEyebrow {
+  font-size: 3rem;
+  line-height: 1;
+  margin: 0;
+  display: block;
+  animation: topFloatA 4s ease-in-out infinite;
+}
+
+.topCtaTitle {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.topCtaLead {
+  color: var(--text-muted);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.7;
+}
+
+@media (prefers-color-scheme: dark) {
+  .topLanding {
+    background: #fff7ed;
+    color: #1f2937;
+  }
+
+  .topStepCard,
+  .topFeatureCard {
+    background: rgba(255, 255, 255, 0.92);
+  }
+
+  .topHeroTitle,
+  .topSectionTitle,
+  .topCtaTitle,
+  .topStepTitle,
+  .topSampleName,
+  .topFeatureTitle {
+    color: #1f2937;
+  }
+
+  .topHeroLead,
+  .topSectionLead,
+  .topStepDesc,
+  .topSampleDesc,
+  .topFeatureDesc,
+  .topCtaLead,
+  .topHeroNote {
+    color: #4b5563;
+  }
+
+  .topCtaButton {
+    color: #ffffff;
+  }
+
+  .topSampleTag {
+    background: rgba(255, 255, 255, 0.75);
+  }
+}
+
+@media (max-width: 768px) {
+  .topHero {
+    padding: 60px 20px 56px;
+  }
+
+  .topHeroInner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+
+  .topHeroBadge {
+    margin: 0 auto;
+  }
+
+  .topHeroActions {
+    justify-content: center;
+  }
+
+  .topHeroVisual {
+    min-height: 180px;
+  }
+
+  .topHeroOrb {
+    width: 180px;
+    height: 180px;
+  }
+
+  .topEmojiFloat1 {
+    font-size: 2.8rem;
+    margin-left: -22px;
+  }
+
+  .topEmojiFloat4 {
+    font-size: 2rem;
+    margin-top: -16px;
+  }
+
+  .topStepGrid,
+  .topFeatureGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .topSection {
+    padding: 60px 20px;
+  }
+
+  .topCtaSection {
+    padding: 60px 20px 80px;
+  }
+
+  .topCtaButtonLarge {
+    padding: 18px 36px;
+    font-size: 1rem;
+    width: 100%;
+  }
+
+  .topSectionLead {
+    margin-bottom: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .topBreakSm {
+    display: none;
+  }
+}
+
+/* Top page output preview uses the same UI as /3_Output */
+.topOutputPreview {
+  max-width: 1100px;
+  margin: 8px auto 0;
+}
+
+.topOutputPreview .resultCard {
+  margin: 0;
+}
+
+.topOutputPreviewNote {
+  margin: 18px 0 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.7;
+}
