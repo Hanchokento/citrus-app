@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useApp } from "@/lib/context";
 import { appendDiagnosisLog, requestRecommendation } from "@/lib/api";
 import type { TasteInput, UserPreferences } from "@/lib/types";
+import TasteRadarChart from "@/components/TasteRadarChart";
 
 type TasteKey = keyof TasteInput;
 
@@ -97,20 +98,16 @@ const HINTS = [
 
 export default function InputPage() {
   const router = useRouter();
-  const {
-    isLoggedIn,
-    userId,
-    setUserPreferences,
-    setTopIds,
-  } = useApp();
+  const { userId, setUserPreferences, setTopIds } = useApp();
 
   const [values, setValues] = useState<Partial<TasteInput>>({});
   const [activeHint, setActiveHint] = useState<number | null>(null);
   const [error, setError] = useState("");
 
   const selectedCount = useMemo(
-    () => INPUT_ITEMS.filter((item) => typeof values[item.key] === "number").length,
-    [values]
+    () =>
+      INPUT_ITEMS.filter((item) => typeof values[item.key] === "number").length,
+    [values],
   );
 
   const isComplete = selectedCount === INPUT_ITEMS.length;
@@ -157,7 +154,10 @@ export default function InputPage() {
       setUserPreferences(prefs);
       setTopIds(topIds, sessionId);
 
-      sessionStorage.setItem("citrus_recommendations", JSON.stringify(recommendations));
+      sessionStorage.setItem(
+        "citrus_recommendations",
+        JSON.stringify(recommendations),
+      );
 
       appendDiagnosisLog({
         sessionId,
@@ -179,13 +179,22 @@ export default function InputPage() {
     }
   }
 
+  function submitSimilarPreferenceRecommendation() {
+    if (!isComplete) {
+      setError("似た好みの人が選んだ柑橘を探すには、まず好みを選んでください。");
+      return;
+    }
+
+    setError("似た好みの人が選んだ柑橘を探す機能は現在準備中です。");
+  }
+
   return (
     <main className="inputPage">
       <header className="inputHeader">
         <button
           className="backButton"
           type="button"
-          onClick={() => router.push(isLoggedIn ? "/1_TopLogin" : "/1_Top")}
+          onClick={() => router.push("/1_Top")}
         >
           ← 戻る
         </button>
@@ -290,14 +299,22 @@ export default function InputPage() {
 
           <div className="currentSelection">
             <h3>現在の選択</h3>
-            {INPUT_ITEMS.map((item) => (
-              <div className="currentSelectionRow" key={item.key}>
-                <span>
-                  {item.emoji} {item.label}
-                </span>
-                <strong>{values[item.key] ?? "—"}</strong>
-              </div>
-            ))}
+            <p className="currentSelectionLead">
+              選んだ好みがレーダーチャートに反映されます。
+            </p>
+
+            <TasteRadarChart features={values} />
+
+            <div className="currentSelectionGrid">
+              {INPUT_ITEMS.map((item) => (
+                <div className="currentSelectionChip" key={item.key}>
+                  <span>
+                    {item.emoji} {item.label}
+                  </span>
+                  <strong>{values[item.key] ?? "—"}</strong>
+                </div>
+              ))}
+            </div>
           </div>
         </aside>
       </div>
@@ -309,8 +326,16 @@ export default function InputPage() {
           onClick={submit}
         >
           {isComplete
-            ? "診断する 🍊"
+            ? "あなたの好みに近い柑橘を探す 🍊"
             : `あと ${INPUT_ITEMS.length - selectedCount} 項目を選んでください`}
+        </button>
+
+        <button
+          className="secondaryRecommendationButton fullButton"
+          type="button"
+          onClick={submitSimilarPreferenceRecommendation}
+        >
+          似た好みの人が選んだ柑橘を探す
         </button>
       </div>
     </main>

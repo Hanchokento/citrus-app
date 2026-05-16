@@ -128,7 +128,7 @@ p {
 }
 
 /* ===================================================================
-   TOP PAGE - /1_Top, /1_TopLogin
+   TOP PAGE - /1_Top
    =================================================================== */
 
 .topPage {
@@ -294,7 +294,7 @@ p {
 }
 
 /* ===================================================================
-   LOGIN PAGE - /3_Login
+   REMOVED LOGIN PAGE STYLES
    =================================================================== */
 
 .loginCard {
@@ -1471,5 +1471,166 @@ p {
     height: auto;
     aspect-ratio: 303 / 88;
     background-size: contain;
+  }
+}
+
+/* Similar preference recommendation button */
+.secondaryRecommendationButton {
+  border: 1px solid #fed7aa;
+  background: #fff7ed;
+  color: #9a3412;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.secondaryRecommendationButton:hover {
+  background: #ffedd5;
+}
+
+/* Current input radar chart */
+.currentSelectionLead {
+  margin: 4px 0 10px;
+  font-size: 0.85rem;
+  color: #92400e;
+}
+
+.currentSelection .tasteRadarChart {
+  max-width: 260px;
+  margin: 4px auto 12px;
+}
+
+.currentSelectionGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.currentSelectionChip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid #fed7aa;
+  background: #fff7ed;
+  border-radius: 999px;
+  padding: 6px 9px;
+  font-size: 0.85rem;
+  color: #7c2d12;
+}
+
+.currentSelectionChip strong {
+  color: #c2410c;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .currentSelection .tasteRadarChart {
+    max-width: 230px;
+  }
+
+  .currentSelectionGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Input page current selection radar chart */
+@media (min-width: 900px) {
+  .hintCard {
+    position: sticky;
+    top: 24px;
+    align-self: start;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+  }
+}
+
+.currentSelectionLead {
+  margin: 4px 0 10px;
+  font-size: 0.85rem;
+  color: #92400e;
+  line-height: 1.6;
+}
+
+.inputTasteRadarChart {
+  width: min(100%, 260px);
+  margin: 8px auto 12px;
+}
+
+.inputTasteRadarChart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.inputRadarGrid {
+  fill: none;
+  stroke: #fed7aa;
+  stroke-width: 1.2;
+}
+
+.inputRadarAxis {
+  stroke: #fed7aa;
+  stroke-width: 1;
+}
+
+.inputRadarArea {
+  fill: rgba(249, 128, 6, 0.2);
+  stroke: #f97316;
+  stroke-width: 2.4;
+  stroke-linejoin: round;
+}
+
+.inputRadarPoint {
+  fill: #f97316;
+  stroke: #ffffff;
+  stroke-width: 2;
+}
+
+.inputRadarLabel {
+  fill: #7c2d12;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.inputRadarValue {
+  fill: #ea580c;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.currentSelectionGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.currentSelectionChip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid #fed7aa;
+  background: #fff7ed;
+  border-radius: 999px;
+  padding: 6px 9px;
+  font-size: 0.84rem;
+  color: #7c2d12;
+}
+
+.currentSelectionChip strong {
+  color: #c2410c;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .inputTasteRadarChart {
+    width: min(100%, 230px);
+  }
+
+  .currentSelectionGrid {
+    grid-template-columns: 1fr;
   }
 }

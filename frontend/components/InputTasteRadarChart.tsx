@@ -1,11 +1,11 @@
 "use client";
-// frontend/components/TasteRadarChart.tsx
+// frontend/components/InputTasteRadarChart.tsx
 
 import { useEffect, useMemo, useState } from "react";
 import type { TasteInput } from "@/lib/types";
 
-type TasteRadarChartProps = {
-  features: Partial<TasteInput>;
+type InputTasteRadarChartProps = {
+  values: Partial<TasteInput>;
 };
 
 const AXES: {
@@ -20,10 +20,10 @@ const AXES: {
   { key: "texture", label: "食感" },
 ];
 
-const CENTER = 100;
-const RADIUS = 64;
+const CENTER = 110;
+const RADIUS = 72;
 const MAX_VALUE = 6;
-const ANIMATION_DURATION_MS = 760;
+const ANIMATION_DURATION_MS = 650;
 
 function clampValue(value: number) {
   return Math.max(0, Math.min(MAX_VALUE, value));
@@ -33,8 +33,8 @@ function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
 }
 
-function valueOrZero(features: Partial<TasteInput>, key: keyof TasteInput) {
-  const value = features[key];
+function valueOrZero(values: Partial<TasteInput>, key: keyof TasteInput) {
+  const value = values[key];
 
   return typeof value === "number" ? value : 0;
 }
@@ -59,9 +59,9 @@ function outerPointFor(index: number, extra = 0) {
   };
 }
 
-function polygonPointsFor(features: Partial<TasteInput>) {
+function polygonPointsFor(values: Partial<TasteInput>) {
   return AXES.map((axis, index) => {
-    const point = pointFor(index, valueOrZero(features, axis.key));
+    const point = pointFor(index, valueOrZero(values, axis.key));
     return `${point.x},${point.y}`;
   }).join(" ");
 }
@@ -75,7 +75,9 @@ function gridPointsFor(level: number) {
   }).join(" ");
 }
 
-export default function TasteRadarChart({ features }: TasteRadarChartProps) {
+export default function InputTasteRadarChart({
+  values,
+}: InputTasteRadarChartProps) {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -101,34 +103,34 @@ export default function TasteRadarChart({ features }: TasteRadarChartProps) {
       cancelAnimationFrame(animationFrameId);
     };
   }, [
-    features.brix,
-    features.acid,
-    features.bitterness,
-    features.aroma,
-    features.moisture,
-    features.texture,
+    values.brix,
+    values.acid,
+    values.bitterness,
+    values.aroma,
+    values.moisture,
+    values.texture,
   ]);
 
-  const animatedFeatures = useMemo<Partial<TasteInput>>(
+  const animatedValues = useMemo<Partial<TasteInput>>(
     () => ({
-      brix: valueOrZero(features, "brix") * progress,
-      acid: valueOrZero(features, "acid") * progress,
-      bitterness: valueOrZero(features, "bitterness") * progress,
-      aroma: valueOrZero(features, "aroma") * progress,
-      moisture: valueOrZero(features, "moisture") * progress,
-      texture: valueOrZero(features, "texture") * progress,
+      brix: valueOrZero(values, "brix") * progress,
+      acid: valueOrZero(values, "acid") * progress,
+      bitterness: valueOrZero(values, "bitterness") * progress,
+      aroma: valueOrZero(values, "aroma") * progress,
+      moisture: valueOrZero(values, "moisture") * progress,
+      texture: valueOrZero(values, "texture") * progress,
     }),
-    [features, progress],
+    [values, progress],
   );
 
   return (
-    <div className="tasteRadarChart" aria-label="柑橘の味特徴レーダーチャート">
-      <svg viewBox="0 0 200 200" role="img">
+    <div className="inputTasteRadarChart" aria-label="現在の選択レーダーチャート">
+      <svg viewBox="0 0 220 220" role="img">
         {[1, 2, 3].map((level) => (
           <polygon
             key={level}
             points={gridPointsFor(level)}
-            className="tasteRadarGrid"
+            className="inputRadarGrid"
           />
         ))}
 
@@ -142,38 +144,50 @@ export default function TasteRadarChart({ features }: TasteRadarChartProps) {
               y1={CENTER}
               x2={end.x}
               y2={end.y}
-              className="tasteRadarAxis"
+              className="inputRadarAxis"
             />
           );
         })}
 
         <polygon
-          points={polygonPointsFor(animatedFeatures)}
-          className="tasteRadarArea"
+          points={polygonPointsFor(animatedValues)}
+          className="inputRadarArea"
         />
 
         {AXES.map((axis, index) => {
-          const label = outerPointFor(index, 22);
-          const rawValue = features[axis.key];
+          const animatedPoint = pointFor(
+            index,
+            valueOrZero(animatedValues, axis.key),
+          );
+          const labelPoint = outerPointFor(index, 24);
+          const rawValue = values[axis.key];
           const valueLabel = typeof rawValue === "number" ? String(rawValue) : "—";
 
           return (
             <g key={axis.key}>
+              <circle
+                cx={animatedPoint.x}
+                cy={animatedPoint.y}
+                r="3.8"
+                className="inputRadarPoint"
+              />
+
               <text
-                x={label.x}
-                y={label.y - 5}
+                x={labelPoint.x}
+                y={labelPoint.y - 6}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                className="tasteRadarLabel"
+                className="inputRadarLabel"
               >
                 {axis.label}
               </text>
+
               <text
-                x={label.x}
-                y={label.y + 10}
+                x={labelPoint.x}
+                y={labelPoint.y + 10}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                className="tasteRadarValueLabel"
+                className="inputRadarValue"
               >
                 {valueLabel}
               </text>
