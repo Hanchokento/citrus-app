@@ -243,7 +243,6 @@ export default function TopPage() {
             type="button"
             onClick={() => router.push("/2_Input")}
           >
-            診断を始める →
           </button>
         </div>
       </section>
