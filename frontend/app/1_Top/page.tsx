@@ -49,7 +49,12 @@ const STEPS = [
   },
 ];
 
-const FEATURES = [
+const FEATURES: {
+  icon: string;
+  iconClassName?: string;
+  title: string;
+  description: string;
+}[] = [
   {
     icon: "/other_images/top_six_preferences.png",
     title: "名前を知らなくても選べる",
@@ -58,6 +63,7 @@ const FEATURES = [
   },
   {
     icon: "/other_images/top_visual_features.png",
+    iconClassName: "topFeatureIcon topFeatureIconRadar",
     title: "味の違いを見比べられる",
     description:
       "おすすめ品種の特徴をグラフで見られるので、自分の好みに合うか判断しやすくなります。",
@@ -111,8 +117,8 @@ export default function TopPage() {
           <div className="topHeroVisual" aria-hidden="true">
             <div className="topHeroOrb">
               <span className="topEmojiFloat topEmojiFloat1">🍊</span>
-              <span className="topEmojiFloat topEmojiFloat2">🍋</span>
-              <span className="topEmojiFloat topEmojiFloat3">🍊</span>
+              <span className="topEmojiFloat topEmojiFloat2">🍊</span>
+              <span className="topEmojiFloat topEmojiFloat3">🍋</span>
               <span className="topEmojiFloat topEmojiFloat4">🍋</span>
             </div>
           </div>
@@ -225,7 +231,7 @@ export default function TopPage() {
               >
                 <div className="topFeatureIconWrap" aria-hidden="true">
                   <Image
-                    className="topFeatureIcon"
+                    className={feature.iconClassName ?? "topFeatureIcon"}
                     src={feature.icon}
                     alt=""
                     width={64}

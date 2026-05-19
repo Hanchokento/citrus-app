@@ -9,7 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { AppState, UserInfo, UserPreferences } from "./types";
+import type { AppState, UserPreferences } from "./types";
 
 const INITIAL_STATE: AppState = {
   isLoggedIn: false,
@@ -24,12 +24,10 @@ const INITIAL_STATE: AppState = {
 
 const SESSION_KEY = "citrus_app_state";
 
-type LoginUser = Omit<UserInfo, "isLoggedIn">;
 
 interface AppContextValue extends AppState {
   setUserPreferences: (prefs: UserPreferences) => void;
   setTopIds: (ids: number[], sessionId: string) => void;
-  loginWithLine: (user: LoginUser) => void;
   logout: () => void;
   resetDiagnosis: () => void;
 }
@@ -84,19 +82,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }));
   }, []);
 
-  const loginWithLine = useCallback((user: LoginUser) => {
-    setState((prev) => {
-      const next = {
-        ...prev,
-        isLoggedIn: true,
-        ...user,
-      };
-
-      saveState(next);
-      return next;
-    });
-  }, []);
-
   const logout = useCallback(() => {
     setState((prev) => ({
       ...prev,
@@ -123,8 +108,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         ...state,
         setUserPreferences,
         setTopIds,
-        loginWithLine,
-        logout,
+logout,
         resetDiagnosis,
       }}
     >
