@@ -112,8 +112,8 @@ export default function TopPage() {
             <div className="topHeroOrb">
               <span className="topEmojiFloat topEmojiFloat1">🍊</span>
               <span className="topEmojiFloat topEmojiFloat2">🍋</span>
-              <span className="topEmojiFloat topEmojiFloat3">🍈</span>
-              <span className="topEmojiFloat topEmojiFloat4">🍑</span>
+              <span className="topEmojiFloat topEmojiFloat3">🍊</span>
+              <span className="topEmojiFloat topEmojiFloat4">🍋</span>
             </div>
           </div>
         </div>
