@@ -1,6 +1,7 @@
 "use client";
 // frontend/app/1_Top/page.tsx
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { CitrusImage } from "@/components/CitrusImage";
 import TasteRadarChart from "@/components/TasteRadarChart";
@@ -27,21 +28,21 @@ const SAMPLE_RESULT = {
 const STEPS = [
   {
     number: "01",
-    emoji: "✏️",
+    icon: "/other_images/top_select_preferences.png",
     title: "好みを選ぶ",
     description:
       "甘さ・酸味・香りなど、6つの項目を1〜6のボタンで直感的に選びます。",
   },
   {
     number: "02",
-    emoji: "🍊",
+    icon: "/other_images/top_view_recommendations.png",
     title: "おすすめを見る",
     description:
       "入力した好みに近い柑橘をランキング形式で上位3品種まで紹介します。",
   },
   {
     number: "03",
-    emoji: "🛒",
+    icon: "/other_images/top_search_citrus.png",
     title: "気になる柑橘を探す",
     description:
       "Amazon・楽天・ふるさと納税サイトでそのまま探せます。",
@@ -50,22 +51,22 @@ const STEPS = [
 
 const FEATURES = [
   {
-    emoji: "🎯",
-    title: "6つの好みから推薦",
+    icon: "/other_images/top_six_preferences.png",
+    title: "名前を知らなくても選べる",
     description:
-      "甘さ・酸味・苦味・香り・ジューシーさ・食感をもとに、あなたにぴったりの品種を探します。",
+      "甘いもの、さっぱりしたもの、香りが強いものなど、食べたい味から柑橘を探せます。",
   },
   {
-    emoji: "📊",
-    title: "見た目で分かる特徴",
+    icon: "/other_images/top_visual_features.png",
+    title: "味の違いを見比べられる",
     description:
-      "レーダーチャートで柑橘の特徴を一目で把握。自分の好みとの比較も簡単です。",
+      "おすすめ品種の特徴をグラフで見られるので、自分の好みに合うか判断しやすくなります。",
   },
   {
-    emoji: "🔍",
-    title: "購入先もすぐ探せる",
+    icon: "/other_images/top_find_shop.png",
+    title: "買う前の迷いを減らせる",
     description:
-      "気になった柑橘はAmazon・楽天・ふるさと納税サイトでそのまま探せます。",
+      "気になる品種をそのまま検索できるので、通販やふるさと納税でも選びやすくなります。",
   },
 ];
 
@@ -130,7 +131,15 @@ export default function TopPage() {
                 style={{ animationDelay: `${i * 0.1}s` }}
               >
                 <div className="topStepNumber">{step.number}</div>
-                <div className="topStepEmoji">{step.emoji}</div>
+                <div className="topStepIconWrap" aria-hidden="true">
+                  <Image
+                    className="topStepIcon"
+                    src={step.icon}
+                    alt=""
+                    width={72}
+                    height={72}
+                  />
+                </div>
                 <h3 className="topStepTitle">{step.title}</h3>
                 <p className="topStepDesc">{step.description}</p>
               </div>
@@ -214,7 +223,15 @@ export default function TopPage() {
                 key={feature.title}
                 style={{ animationDelay: `${i * 0.1}s` }}
               >
-                <div className="topFeatureEmoji">{feature.emoji}</div>
+                <div className="topFeatureIconWrap" aria-hidden="true">
+                  <Image
+                    className="topFeatureIcon"
+                    src={feature.icon}
+                    alt=""
+                    width={64}
+                    height={64}
+                  />
+                </div>
                 <h3 className="topFeatureTitle">{feature.title}</h3>
                 <p className="topFeatureDesc">{feature.description}</p>
               </div>
@@ -243,6 +260,7 @@ export default function TopPage() {
             type="button"
             onClick={() => router.push("/2_Input")}
           >
+            診断を始める →
           </button>
         </div>
       </section>

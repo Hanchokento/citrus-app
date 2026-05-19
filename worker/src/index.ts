@@ -2,7 +2,7 @@
 
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { recommendRoute } from "./routes/recommend";
+import { recommendRoute } from "./routes/caluculation_logic";
 import { diagnosisLogRoute } from "./routes/diagnosis-log";
 import { clickLogRoute } from "./routes/click-log";
 import { healthRoute } from "./routes/health";

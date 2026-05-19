@@ -2456,3 +2456,130 @@ p {
   transform: none;
   filter: none;
 }
+
+/* Top page generated icons */
+.topStepIconWrap,
+.topFeatureIconWrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.topStepIcon {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 1.25rem;
+}
+
+.topFeatureIcon {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  display: block;
+  margin: 0 0 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .topStepIcon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .topFeatureIcon {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+/* Refined top page icon layout */
+.topStepCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.topStepNumber {
+  margin-bottom: 1.1rem;
+}
+
+.topStepIconWrap {
+  width: 112px;
+  height: 112px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  margin: 0 auto 1.1rem;
+}
+
+.topStepIcon {
+  width: 112px;
+  height: 112px;
+  object-fit: contain;
+  display: block;
+  transform: scale(1.55);
+  transform-origin: center;
+  margin: 0;
+}
+
+.topStepTitle {
+  margin-top: 0.2rem;
+}
+
+.topFeatureCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.topFeatureIconWrap {
+  width: 92px;
+  height: 92px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  margin: 0 0 1.25rem;
+}
+
+.topFeatureIcon {
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+  display: block;
+  transform: scale(1.5);
+  transform-origin: center;
+  margin: 0;
+}
+
+.topFeatureTitle {
+  margin-top: 0;
+}
+
+@media (max-width: 768px) {
+  .topStepIconWrap {
+    width: 92px;
+    height: 92px;
+    margin-bottom: 0.9rem;
+  }
+
+  .topStepIcon {
+    width: 92px;
+    height: 92px;
+    transform: scale(1.45);
+  }
+
+  .topFeatureIconWrap {
+    width: 78px;
+    height: 78px;
+    margin-bottom: 1rem;
+  }
+
+  .topFeatureIcon {
+    width: 78px;
+    height: 78px;
+    transform: scale(1.4);
+  }
+}
