@@ -4,7 +4,11 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/lib/context";
-import { appendDiagnosisLog, requestRecommendation } from "@/lib/api";
+import {
+  appendDiagnosisLog,
+  requestRecommendation,
+  requestSimilarPreferenceRecommendation,
+} from "@/lib/api";
 import type { TasteInput, UserPreferences } from "@/lib/types";
 import TasteRadarChart from "@/components/TasteRadarChart";
 
@@ -179,13 +183,53 @@ export default function InputPage() {
     }
   }
 
-  function submitSimilarPreferenceRecommendation() {
+  async function submitSimilarPreferenceRecommendation() {
     if (!isComplete) {
       setError("似た好みの人が選んだ柑橘を探すには、まず好みを選んでください。");
       return;
     }
 
-    setError("似た好みの人が選んだ柑橘を探す機能は現在準備中です。");
+    const input = values as TasteInput;
+
+    const prefs: UserPreferences = {
+      ...input,
+      userId,
+    };
+
+    try {
+      const recommendations =
+        await requestSimilarPreferenceRecommendation(input);
+      const topIds = recommendations.map((item) => item.id);
+      const sessionId = crypto.randomUUID();
+
+      setUserPreferences(prefs);
+      setTopIds(topIds, sessionId);
+
+      sessionStorage.setItem(
+        "citrus_recommendations",
+        JSON.stringify(recommendations)
+      );
+
+      appendDiagnosisLog({
+        sessionId,
+        userId,
+        inputJson: prefs,
+        result: recommendations.map((item) => ({
+          id: item.id,
+          rank: item.rank,
+        })),
+        timestamp: new Date().toISOString(),
+      }).catch((logError) => {
+        console.warn("Failed to append diagnosis log", logError);
+      });
+
+      router.push("/3_Output");
+    } catch (error) {
+      console.error(error);
+      setError(
+        "似た好みの人の推薦計算に失敗しました。時間をおいてもう一度お試しください。"
+      );
+    }
   }
 
   return (
@@ -331,7 +375,7 @@ export default function InputPage() {
             似た好みの人が選んだ柑橘を探す
           </span>
           <span className="recommendActionText">
-            過去の選択傾向をもとにした推薦です。現在準備中です。
+            過去の選択傾向をもとに、似た好みの人の行動から推薦します。
           </span>
         </button>
       </div>

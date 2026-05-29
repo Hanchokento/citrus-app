@@ -35,6 +35,25 @@ type RecommendationResult = {
   features: TasteInput;
 };
 
+type LogRow = {
+  input_json: string;
+  result_json: string;
+  "1_a": number;
+  "1_r": number;
+  "1_s": number;
+  "2_a": number;
+  "2_r": number;
+  "2_s": number;
+  "3_a": number;
+  "3_r": number;
+  "3_s": number;
+};
+
+type Interaction = TasteInput & {
+  itemId: number;
+  liked: number;
+};
+
 const FEATURE_KEYS: (keyof TasteInput)[] = [
   "brix",
   "acid",
@@ -99,6 +118,85 @@ recommendRoute.post("/", async (c) => {
   });
 });
 
+recommendRoute.post("/similar", async (c) => {
+  const input = await c.req.json<TasteInput>().catch(() => null);
+
+  if (!input || !isValidTasteInput(input)) {
+    return c.json(
+      {
+        ok: false,
+        error: "Invalid taste input",
+      },
+      400
+    );
+  }
+
+  const featuresObject = await c.env.R2.get("citrus_features.csv");
+
+  if (!featuresObject) {
+    return c.json(
+      {
+        ok: false,
+        error: "citrus_features.csv not found in R2",
+      },
+      500
+    );
+  }
+
+  const featuresText = await featuresObject.text();
+  const features = parseCitrusFeaturesCsv(featuresText);
+
+  if (features.length === 0) {
+    return c.json(
+      {
+        ok: false,
+        error: "No valid citrus feature rows found",
+      },
+      500
+    );
+  }
+
+  const details = await loadDetailsFromR2(c.env.R2);
+  const detailMap = new Map(details.map((detail) => [detail.id, detail]));
+  const featureMap = new Map(features.map((feature) => [feature.id, feature]));
+
+  const logRows = await c.env.DB.prepare(
+    `
+    SELECT
+      input_json,
+      result_json,
+      "1_a", "1_r", "1_s",
+      "2_a", "2_r", "2_s",
+      "3_a", "3_r", "3_s"
+    FROM user_logs
+    ORDER BY id DESC
+    LIMIT 5000
+    `
+  ).all<LogRow>();
+
+  const interactions = buildInteractions(logRows.results ?? []);
+  const result =
+    interactions.length > 0
+      ? calculateTop3ByCollaborativeFiltering(
+          input,
+          interactions,
+          detailMap,
+          featureMap
+        )
+      : calculateTop3(input, features, detailMap);
+
+  return c.json({
+    ok: true,
+    source: {
+      mode: interactions.length > 0 ? "collaborative_filtering" : "fallback",
+      logs: "d1:user_logs",
+      features: "r2:citrus_features.csv",
+      details: "r2:citrus_details_list.xlsx",
+    },
+    result,
+  });
+});
+
 function isValidTasteInput(value: Partial<TasteInput>): value is TasteInput {
   return FEATURE_KEYS.every((key) => {
     const v = value[key];
@@ -156,6 +254,159 @@ function calculateTop3(
         },
       };
     });
+}
+
+function calculateTop3ByCollaborativeFiltering(
+  input: TasteInput,
+  interactions: Interaction[],
+  detailMap: Map<number, CitrusDetail>,
+  featureMap: Map<number, CitrusFeature>
+): RecommendationResult[] {
+  const scored = interactions.map((entry) => {
+    const dist = Math.sqrt(
+      FEATURE_KEYS.reduce((sum, key) => {
+        const diff = input[key] - entry[key];
+        return sum + diff * diff;
+      }, 0)
+    );
+
+    return {
+      ...entry,
+      similarity: 1 / (1 + dist),
+    };
+  });
+
+  const neighborInteractions = scored
+    .sort((a, b) => b.similarity - a.similarity)
+    .slice(0, 100);
+
+  const aggregates = new Map<
+    number,
+    {
+      weightedLikedSum: number;
+      weightedShownSum: number;
+      likedCount: number;
+    }
+  >();
+
+  for (const row of neighborInteractions) {
+    const current = aggregates.get(row.itemId) ?? {
+      weightedLikedSum: 0,
+      weightedShownSum: 0,
+      likedCount: 0,
+    };
+
+    current.weightedLikedSum += row.similarity * row.liked;
+    current.weightedShownSum += row.similarity;
+    current.likedCount += row.liked;
+    aggregates.set(row.itemId, current);
+  }
+
+  return [...aggregates.entries()]
+    .map(([itemId, agg]) => {
+      const score =
+        agg.weightedShownSum > 0
+          ? agg.weightedLikedSum / agg.weightedShownSum
+          : 0;
+
+      return {
+        itemId,
+        score,
+        weightedLikedSum: agg.weightedLikedSum,
+        likedCount: agg.likedCount,
+      };
+    })
+    .sort(
+      (a, b) =>
+        b.score - a.score ||
+        b.weightedLikedSum - a.weightedLikedSum ||
+        b.likedCount - a.likedCount ||
+        a.itemId - b.itemId
+    )
+    .slice(0, 3)
+    .map((item, index) => {
+      const feature = featureMap.get(item.itemId);
+      const detail = detailMap.get(item.itemId);
+      const name =
+        detail?.name || feature?.name || `柑橘ID ${item.itemId}`;
+
+      return {
+        id: item.itemId,
+        rank: index + 1,
+        score: Number(item.score.toFixed(4)),
+        name,
+        description:
+          detail?.description ||
+          "この柑橘の説明文は現在準備中です。",
+        imageUrl:
+          detail?.imageUrl ||
+          buildCitrusImagePath(item.itemId),
+        features: feature
+          ? {
+              brix: feature.brix,
+              acid: feature.acid,
+              bitterness: feature.bitterness,
+              aroma: feature.aroma,
+              moisture: feature.moisture,
+              texture: feature.texture,
+            }
+          : input,
+      };
+    });
+}
+
+function buildInteractions(rows: LogRow[]): Interaction[] {
+  const interactions: Interaction[] = [];
+
+  for (const row of rows) {
+    try {
+      const inputRaw = JSON.parse(row.input_json) as Partial<TasteInput>;
+      const resultRaw = JSON.parse(row.result_json) as Array<{
+        id?: unknown;
+        rank?: unknown;
+      }>;
+
+      if (!isValidTasteInput(inputRaw) || !Array.isArray(resultRaw)) {
+        continue;
+      }
+
+      for (const item of resultRaw) {
+        const rank = Number(item.rank);
+        const itemId = Number(item.id);
+
+        if (!Number.isInteger(rank) || rank < 1 || rank > 3) {
+          continue;
+        }
+
+        if (!Number.isInteger(itemId)) {
+          continue;
+        }
+
+        const liked = isRankLiked(row, rank) ? 1 : 0;
+        interactions.push({
+          ...inputRaw,
+          itemId,
+          liked,
+        });
+      }
+    } catch {
+      continue;
+    }
+  }
+
+  return interactions;
+}
+
+function isRankLiked(row: LogRow, rank: number): boolean {
+  if (rank === 1) {
+    return row["1_a"] === 1 || row["1_r"] === 1 || row["1_s"] === 1;
+  }
+
+  if (rank === 2) {
+    return row["2_a"] === 1 || row["2_r"] === 1 || row["2_s"] === 1;
+  }
+
+  return row["3_a"] === 1 || row["3_r"] === 1 || row["3_s"] === 1;
 }
 
 async function loadDetailsFromR2(r2: R2Bucket): Promise<CitrusDetail[]> {

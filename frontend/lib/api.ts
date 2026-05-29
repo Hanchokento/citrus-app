@@ -36,7 +36,20 @@ type RecommendResponse =
 export async function requestRecommendation(
   input: TasteInput | UserPreferences
 ): Promise<RecommendationItem[]> {
-  const res = await fetch(`${WORKER_BASE_URL}/recommend`, {
+  return requestRecommendationByPath("/recommend", input);
+}
+
+export async function requestSimilarPreferenceRecommendation(
+  input: TasteInput | UserPreferences
+): Promise<RecommendationItem[]> {
+  return requestRecommendationByPath("/recommend/similar", input);
+}
+
+async function requestRecommendationByPath(
+  path: string,
+  input: TasteInput | UserPreferences
+): Promise<RecommendationItem[]> {
+  const res = await fetch(`${WORKER_BASE_URL}${path}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -46,7 +59,9 @@ export async function requestRecommendation(
 
   if (!res.ok) {
     const message = await res.text().catch(() => "");
-    throw new Error(`Failed to request recommendation: ${res.status} ${message}`);
+    throw new Error(
+      `Failed to request recommendation: ${res.status} ${message}`
+    );
   }
 
   const data = (await res.json()) as RecommendResponse;
