@@ -127,19 +127,6 @@ export default function InputPage() {
     setError("");
   }
 
-  function chooseNeutralForMissing() {
-    const next: Partial<TasteInput> = { ...values };
-
-    for (const item of INPUT_ITEMS) {
-      if (typeof next[item.key] !== "number") {
-        next[item.key] = 3;
-      }
-    }
-
-    setValues(next);
-    setError("");
-  }
-
   async function submit() {
     if (!canSubmit) {
       setError("3項目以上の好みを選んでください。");
@@ -266,13 +253,6 @@ export default function InputPage() {
               <p>1が弱め、6が強めです。迷う時は3〜4がおすすめです。</p>
             </div>
 
-            <button
-              className="neutralButton"
-              type="button"
-              onClick={chooseNeutralForMissing}
-            >
-              こだわりなしで埋める
-            </button>
           </div>
 
           <div className="scaleGrid">

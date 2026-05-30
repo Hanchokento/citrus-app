@@ -462,23 +462,6 @@ p {
   font-weight: 700;
 }
 
-.neutralButton {
-  border: 2px solid rgba(249, 128, 6, 0.28);
-  background: var(--cream);
-  color: #c2410c;
-  border-radius: var(--radius-full);
-  padding: 12px 16px;
-  font-weight: 900;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all var(--transition);
-}
-
-.neutralButton:hover {
-  background: white;
-  transform: translateY(-1px);
-}
-
 .scaleGrid {
   display: grid;
   gap: 18px;
@@ -715,10 +698,6 @@ p {
 
   .inputCardHeader {
     flex-direction: column;
-  }
-
-  .neutralButton {
-    width: 100%;
   }
 
   .inputItemTop {
