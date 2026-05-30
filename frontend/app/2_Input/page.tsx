@@ -14,6 +14,8 @@ import TasteRadarChart from "@/components/TasteRadarChart";
 
 type TasteKey = keyof TasteInput;
 
+const MIN_REQUIRED_INPUTS = 3;
+
 const INPUT_ITEMS: {
   key: TasteKey;
   label: string;
@@ -114,7 +116,8 @@ export default function InputPage() {
     [values],
   );
 
-  const isComplete = selectedCount === INPUT_ITEMS.length;
+  const canSubmit = selectedCount >= MIN_REQUIRED_INPUTS;
+  const missingRequiredCount = Math.max(0, MIN_REQUIRED_INPUTS - selectedCount);
 
   function selectValue(key: TasteKey, value: number) {
     setValues((prev) => ({
@@ -138,12 +141,12 @@ export default function InputPage() {
   }
 
   async function submit() {
-    if (!isComplete) {
-      setError("未入力の項目があります。迷う項目は「こだわりなしで埋める」を使っても大丈夫です。");
+    if (!canSubmit) {
+      setError("3項目以上の好みを選んでください。");
       return;
     }
 
-    const input = values as TasteInput;
+    const input = values;
 
     const prefs: UserPreferences = {
       ...input,
@@ -184,12 +187,12 @@ export default function InputPage() {
   }
 
   async function submitSimilarPreferenceRecommendation() {
-    if (!isComplete) {
-      setError("似た好みの人が選んだ柑橘を探すには、まず好みを選んでください。");
+    if (!canSubmit) {
+      setError("似た好みの人が選んだ柑橘を探すには、3項目以上の好みを選んでください。");
       return;
     }
 
-    const input = values as TasteInput;
+    const input = values;
 
     const prefs: UserPreferences = {
       ...input,
@@ -356,9 +359,9 @@ export default function InputPage() {
         >
           <span className="recommendActionEyebrow">自分の好みから</span>
           <span className="recommendActionTitle">
-            {isComplete
+            {canSubmit
               ? "あなたの好みに近い柑橘を探す 🍊"
-              : `あと ${INPUT_ITEMS.length - selectedCount} 項目を選んでください`}
+              : `あと ${missingRequiredCount} 項目を選んでください`}
           </span>
           <span className="recommendActionText">
             甘さ・酸味など、選んだ6つの好みに近い品種を探します。

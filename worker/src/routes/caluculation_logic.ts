@@ -49,7 +49,9 @@ type LogRow = {
   "3_s": number;
 };
 
-type Interaction = TasteInput & {
+type PartialTasteInput = Partial<TasteInput>;
+
+type Interaction = PartialTasteInput & {
   itemId: number;
   liked: number;
 };
@@ -63,10 +65,12 @@ const FEATURE_KEYS: (keyof TasteInput)[] = [
   "texture",
 ];
 
+const MIN_REQUIRED_INPUTS = 3;
+
 export const recommendRoute = new Hono<{ Bindings: Env }>();
 
 recommendRoute.post("/", async (c) => {
-  const input = await c.req.json<TasteInput>().catch(() => null);
+  const input = await c.req.json<PartialTasteInput>().catch(() => null);
 
   if (!input || !isValidTasteInput(input)) {
     return c.json(
@@ -119,7 +123,7 @@ recommendRoute.post("/", async (c) => {
 });
 
 recommendRoute.post("/similar", async (c) => {
-  const input = await c.req.json<TasteInput>().catch(() => null);
+  const input = await c.req.json<PartialTasteInput>().catch(() => null);
 
   if (!input || !isValidTasteInput(input)) {
     return c.json(
@@ -175,7 +179,7 @@ recommendRoute.post("/similar", async (c) => {
   ).all<LogRow>();
 
   const interactions = buildInteractions(logRows.results ?? []);
-  const result =
+  const collaborativeResult =
     interactions.length > 0
       ? calculateTop3ByCollaborativeFiltering(
           input,
@@ -183,12 +187,19 @@ recommendRoute.post("/similar", async (c) => {
           detailMap,
           featureMap
         )
+      : [];
+  const result =
+    collaborativeResult.length > 0
+      ? collaborativeResult
       : calculateTop3(input, features, detailMap);
 
   return c.json({
     ok: true,
     source: {
-      mode: interactions.length > 0 ? "collaborative_filtering" : "fallback",
+      mode:
+        collaborativeResult.length > 0
+          ? "collaborative_filtering"
+          : "fallback",
       logs: "d1:user_logs",
       features: "r2:citrus_features.csv",
       details: "r2:citrus_details_list.xlsx",
@@ -197,25 +208,57 @@ recommendRoute.post("/similar", async (c) => {
   });
 });
 
-function isValidTasteInput(value: Partial<TasteInput>): value is TasteInput {
-  return FEATURE_KEYS.every((key) => {
+function isValidTasteInput(value: PartialTasteInput): value is PartialTasteInput {
+  return inputKeys(value).length >= MIN_REQUIRED_INPUTS;
+}
+
+function inputKeys(value: PartialTasteInput): (keyof TasteInput)[] {
+  return FEATURE_KEYS.filter((key) => {
     const v = value[key];
     return typeof v === "number" && Number.isFinite(v);
   });
 }
 
+function commonInputKeys(
+  a: PartialTasteInput,
+  b: PartialTasteInput
+): (keyof TasteInput)[] {
+  return FEATURE_KEYS.filter((key) => {
+    const av = a[key];
+    const bv = b[key];
+    return (
+      typeof av === "number" &&
+      Number.isFinite(av) &&
+      typeof bv === "number" &&
+      Number.isFinite(bv)
+    );
+  });
+}
+
+function fillMissingTasteValues(input: PartialTasteInput): TasteInput {
+  return {
+    brix: input.brix ?? 0,
+    acid: input.acid ?? 0,
+    bitterness: input.bitterness ?? 0,
+    aroma: input.aroma ?? 0,
+    moisture: input.moisture ?? 0,
+    texture: input.texture ?? 0,
+  };
+}
+
 function calculateTop3(
-  input: TasteInput,
+  input: PartialTasteInput,
   features: CitrusFeature[],
   detailMap: Map<number, CitrusDetail>
 ): RecommendationResult[] {
-  const maxDist = Math.sqrt(FEATURE_KEYS.length * 25);
+  const keys = inputKeys(input);
+  const maxDist = Math.sqrt(keys.length * 25);
 
   return features
     .map((item) => {
       const dist = Math.sqrt(
-        FEATURE_KEYS.reduce((sum, key) => {
-          const diff = input[key] - item[key];
+        keys.reduce((sum, key) => {
+          const diff = input[key]! - item[key];
           return sum + diff * diff;
         }, 0)
       );
@@ -257,24 +300,34 @@ function calculateTop3(
 }
 
 function calculateTop3ByCollaborativeFiltering(
-  input: TasteInput,
+  input: PartialTasteInput,
   interactions: Interaction[],
   detailMap: Map<number, CitrusDetail>,
   featureMap: Map<number, CitrusFeature>
 ): RecommendationResult[] {
-  const scored = interactions.map((entry) => {
-    const dist = Math.sqrt(
-      FEATURE_KEYS.reduce((sum, key) => {
-        const diff = input[key] - entry[key];
-        return sum + diff * diff;
-      }, 0)
-    );
+  const scored = interactions
+    .map((entry) => {
+      const keys = commonInputKeys(input, entry);
 
-    return {
-      ...entry,
-      similarity: 1 / (1 + dist),
-    };
-  });
+      if (keys.length < MIN_REQUIRED_INPUTS) {
+        return null;
+      }
+
+      const dist = Math.sqrt(
+        keys.reduce((sum, key) => {
+          const diff = input[key]! - entry[key]!;
+          return sum + diff * diff;
+        }, 0)
+      );
+
+      return {
+        ...entry,
+        similarity: 1 / (1 + dist),
+      };
+    })
+    .filter(
+      (entry): entry is Interaction & { similarity: number } => entry !== null
+    );
 
   const neighborInteractions = scored
     .sort((a, b) => b.similarity - a.similarity)
@@ -350,7 +403,7 @@ function calculateTop3ByCollaborativeFiltering(
               moisture: feature.moisture,
               texture: feature.texture,
             }
-          : input,
+          : fillMissingTasteValues(input),
       };
     });
 }

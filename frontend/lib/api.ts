@@ -34,20 +34,20 @@ type RecommendResponse =
     };
 
 export async function requestRecommendation(
-  input: TasteInput | UserPreferences
+  input: Partial<TasteInput> | UserPreferences
 ): Promise<RecommendationItem[]> {
   return requestRecommendationByPath("/recommend", input);
 }
 
 export async function requestSimilarPreferenceRecommendation(
-  input: TasteInput | UserPreferences
+  input: Partial<TasteInput> | UserPreferences
 ): Promise<RecommendationItem[]> {
   return requestRecommendationByPath("/recommend/similar", input);
 }
 
 async function requestRecommendationByPath(
   path: string,
-  input: TasteInput | UserPreferences
+  input: Partial<TasteInput> | UserPreferences
 ): Promise<RecommendationItem[]> {
   const res = await fetch(`${WORKER_BASE_URL}${path}`, {
     method: "POST",
@@ -83,12 +83,23 @@ async function requestRecommendationByPath(
       imageUrl:
         item.imageUrl ||
         "/other_images/no_image.png",
-      features: item.features ?? input,
+      features: item.features ?? fillMissingTasteValues(input),
       amazonUrl: buildAmazonUrl(name),
       rakutenUrl: buildRakutenUrl(name),
       satofuruUrl: buildSatofuruUrl(name),
     };
   });
+}
+
+function fillMissingTasteValues(input: Partial<TasteInput>): TasteInput {
+  return {
+    brix: input.brix ?? 0,
+    acid: input.acid ?? 0,
+    bitterness: input.bitterness ?? 0,
+    aroma: input.aroma ?? 0,
+    moisture: input.moisture ?? 0,
+    texture: input.texture ?? 0,
+  };
 }
 
 export async function appendDiagnosisLog(

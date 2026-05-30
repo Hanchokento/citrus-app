@@ -13,7 +13,7 @@ export type TasteInput = {
 };
 
 // ユーザー情報つきの嗜好入力
-export type UserPreferences = TasteInput & {
+export type UserPreferences = Partial<TasteInput> & {
   userId?: string | null;
 };
 

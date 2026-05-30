@@ -16,6 +16,6 @@ export type RankedItem = {
 export type DiagnosisLogInput = {
   session_id: string;
   user_id?: string | null;
-  input_json: TasteInput;
+  input_json: Partial<TasteInput>;
   result: RankedItem[];
 };
