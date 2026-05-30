@@ -14,59 +14,6 @@ import { CitrusImage } from "@/components/CitrusImage";
 import TasteRadarChart from "@/components/TasteRadarChart";
 import type { RecommendationItem } from "@/lib/types";
 
-const DEV_OUTPUT_ITEMS: RecommendationItem[] = [
-  {
-    id: 14,
-    rank: 1,
-    name: "日向夏",
-    imageUrl: "",
-    description:
-      "爽やかな酸味とやさしい甘さが特徴。さっぱりとした後味が心地よい柑橘です。",
-    features: {
-      brix: 4,
-      acid: 5,
-      bitterness: 2,
-      aroma: 4,
-      moisture: 3,
-      texture: 4,
-    },
-  },
-  {
-    id: 8,
-    rank: 2,
-    name: "せとか",
-    imageUrl: "",
-    description:
-      "濃厚な甘さと華やかな香りがあり、ジューシーで食べやすい柑橘です。",
-    features: {
-      brix: 6,
-      acid: 2,
-      bitterness: 1,
-      aroma: 5,
-      moisture: 5,
-      texture: 4,
-    },
-  },
-  {
-    id: 3,
-    rank: 3,
-    name: "はるみ",
-    imageUrl: "",
-    description:
-      "甘みと酸味のバランスがよく、ぷちぷちとした食感が楽しめる柑橘です。",
-    features: {
-      brix: 5,
-      acid: 3,
-      bitterness: 1,
-      aroma: 4,
-      moisture: 4,
-      texture: 5,
-    },
-  },
-];
-
-const USE_DEV_OUTPUT_ITEMS = process.env.NODE_ENV === "development";
-
 export default function OutputPage() {
   const router = useRouter();
   const { sessionId } = useApp();
@@ -79,12 +26,12 @@ export default function OutputPage() {
       const raw = sessionStorage.getItem("citrus_recommendations");
 
       if (!raw) {
-        return USE_DEV_OUTPUT_ITEMS ? DEV_OUTPUT_ITEMS : [];
+        return [];
       }
 
       return JSON.parse(raw) as RecommendationItem[];
     } catch {
-      return USE_DEV_OUTPUT_ITEMS ? DEV_OUTPUT_ITEMS : [];
+      return [];
     }
   });
 
