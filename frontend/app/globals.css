@@ -1817,8 +1817,8 @@ p {
 
 .topHeroScene {
   position: relative;
-  width: min(540px, 92vw);
-  height: 390px;
+  width: min(600px, 94vw);
+  height: 420px;
   perspective: 1500px;
   transform-style: preserve-3d;
 }
@@ -1862,7 +1862,7 @@ p {
   transform:
     translate(-50%, -50%)
     rotateY(var(--hero-angle))
-    translateZ(210px)
+    translateZ(250px)
     rotateX(8deg);
   animation: topHeroFruitTilt 6s ease-in-out infinite;
   cursor: pointer;
@@ -1882,11 +1882,6 @@ p {
   height: 100%;
   object-fit: cover;
   display: block;
-}
-
-.topHeroFruitImageSmall {
-  padding: 10px;
-  object-fit: contain;
 }
 
 .topHeroFruitName {
@@ -2226,8 +2221,8 @@ p {
   }
 
   .topHeroScene {
-    width: min(320px, 92vw);
-    height: 280px;
+    width: min(360px, 94vw);
+    height: 300px;
   }
 
   .topHeroGlow {
@@ -2241,7 +2236,7 @@ p {
     transform:
       translate(-50%, -50%)
       rotateY(var(--hero-angle))
-      translateZ(150px)
+      translateZ(175px)
       rotateX(8deg);
   }
 
