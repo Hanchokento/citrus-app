@@ -2,7 +2,6 @@
 // Cloudflare Worker との通信を担うAPIクライアント
 
 import type {
-  CitrusSummary,
   DiagnosisLogEntry,
   RecommendationItem,
   TasteInput,
@@ -33,47 +32,6 @@ type RecommendResponse =
       ok: false;
       error: string;
     };
-
-type CitrusDetailsResponse =
-  | {
-      ok: true;
-      items: CitrusSummary[];
-    }
-  | {
-      ok: false;
-      error: string;
-    };
-
-export async function requestCitrusDetails(
-  ids: number[]
-): Promise<CitrusSummary[]> {
-  const uniqueIds = [...new Set(ids.filter((id) => Number.isInteger(id)))];
-
-  if (uniqueIds.length === 0) {
-    return [];
-  }
-
-  const params = new URLSearchParams({
-    ids: uniqueIds.join(","),
-  });
-
-  const res = await fetch(`${WORKER_BASE_URL}/citrus?${params.toString()}`, {
-    method: "GET",
-  });
-
-  if (!res.ok) {
-    const message = await res.text().catch(() => "");
-    throw new Error(`Failed to request citrus details: ${res.status} ${message}`);
-  }
-
-  const data = (await res.json()) as CitrusDetailsResponse;
-
-  if (!data.ok) {
-    throw new Error(data.error);
-  }
-
-  return data.items;
-}
 
 export async function requestRecommendation(
   input: Partial<TasteInput> | UserPreferences

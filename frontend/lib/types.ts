@@ -36,13 +36,6 @@ export type CitrusDetails = {
   imageUrl?: string;
 };
 
-export type CitrusSummary = {
-  id: number;
-  name: string;
-  description: string;
-  imageUrl: string;
-};
-
 // 推薦結果の基本形
 export type RankedItem = {
   id: number;

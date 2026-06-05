@@ -2,12 +2,10 @@
 // frontend/app/1_Top/page.tsx
 
 import Image from "next/image";
-import { useEffect, useState, type CSSProperties } from "react";
+import { type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { CitrusImage } from "@/components/CitrusImage";
-import { requestCitrusDetails } from "@/lib/api";
 import TasteRadarChart from "@/components/TasteRadarChart";
-import type { CitrusSummary } from "@/lib/types";
 import type { TasteInput } from "@/lib/types";
 
 const SAMPLE_FEATURES: TasteInput = {
@@ -83,39 +81,6 @@ const HERO_CITRUS_IDS = [14, 8, 17, 29, 38, 10, 11, 13, 39];
 
 export default function TopPage() {
   const router = useRouter();
-  const [heroNameStatus, setHeroNameStatus] = useState<"loading" | "loaded" | "error">(
-    "loading"
-  );
-  const [heroCitrus, setHeroCitrus] = useState<CitrusSummary[]>(
-    HERO_CITRUS_IDS.map((id) => ({
-      id,
-      name: "",
-      description: "",
-      imageUrl: `/citrus_images/citrus_${id}.JPG`,
-    }))
-  );
-
-  useEffect(() => {
-    let cancelled = false;
-
-    requestCitrusDetails(HERO_CITRUS_IDS)
-      .then((items) => {
-        if (!cancelled && items.length > 0) {
-          setHeroCitrus(items);
-          setHeroNameStatus("loaded");
-        }
-      })
-      .catch((error) => {
-        console.error("Failed to load hero citrus details", error);
-        if (!cancelled) {
-          setHeroNameStatus("error");
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   return (
     <main className="topLanding">
@@ -156,33 +121,23 @@ export default function TopPage() {
             <div className="topHeroScene">
               <div className="topHeroGlow" aria-hidden="true" />
               <div className="topHeroCarousel" aria-label="おすすめ柑橘のイメージ">
-                {heroCitrus.map((item, index) => (
+                {HERO_CITRUS_IDS.map((id, index) => (
                   <article
                     className="topHeroFruitCard"
-                    key={item.id}
-                    tabIndex={0}
+                    key={id}
                     style={
                       {
-                        "--hero-angle": `${index * (360 / heroCitrus.length)}deg`,
+                        "--hero-angle": `${index * (360 / HERO_CITRUS_IDS.length)}deg`,
                       } as CSSProperties
                     }
+                    aria-hidden="true"
                   >
                     <div className="topHeroFruitImageWrap">
                       <CitrusImage
-                        id={item.id}
-                        alt={item.name}
+                        id={id}
+                        alt=""
                         className="topHeroFruitImage"
                       />
-                    </div>
-                    <div className="topHeroFruitMeta">
-                      <p className="topHeroFruitId">品種ID {item.id}</p>
-                      <p className="topHeroFruitName">
-                        {heroNameStatus === "loaded"
-                          ? item.name
-                          : heroNameStatus === "loading"
-                            ? "品種名取得中"
-                            : "品種名未取得"}
-                      </p>
                     </div>
                   </article>
                 ))}
