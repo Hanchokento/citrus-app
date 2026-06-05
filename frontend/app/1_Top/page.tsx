@@ -79,7 +79,7 @@ const FEATURES: {
   },
 ];
 
-const HERO_CITRUS_IDS = [14, 8, 17, 29, 38];
+const HERO_CITRUS_IDS = [14, 8, 17, 29, 38, 10, 11, 13, 39];
 
 export default function TopPage() {
   const router = useRouter();
@@ -160,6 +160,7 @@ export default function TopPage() {
                   <article
                     className="topHeroFruitCard"
                     key={item.id}
+                    tabIndex={0}
                     style={
                       {
                         "--hero-angle": `${index * (360 / heroCitrus.length)}deg`,
