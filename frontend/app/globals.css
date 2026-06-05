@@ -1819,7 +1819,7 @@ p {
   position: relative;
   width: min(540px, 92vw);
   height: 390px;
-  perspective: 1200px;
+  perspective: 1500px;
   transform-style: preserve-3d;
 }
 
@@ -1849,9 +1849,9 @@ p {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 156px;
+  width: 144px;
   padding: 10px;
-  border-radius: 28px;
+  border-radius: 24px;
   background: rgba(255, 255, 255, 0.82);
   border: 1px solid rgba(249, 128, 6, 0.18);
   box-shadow:
@@ -1862,9 +1862,11 @@ p {
   transform:
     translate(-50%, -50%)
     rotateY(var(--hero-angle))
-    translateZ(230px)
+    translateZ(210px)
     rotateX(8deg);
   animation: topHeroFruitTilt 6s ease-in-out infinite;
+  cursor: pointer;
+  outline: none;
 }
 
 .topHeroFruitImageWrap {
@@ -1880,6 +1882,33 @@ p {
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.topHeroFruitName {
+  position: absolute;
+  left: 50%;
+  bottom: -36px;
+  z-index: 2;
+  min-width: max-content;
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(249, 128, 6, 0.22);
+  box-shadow: 0 12px 24px rgba(146, 64, 14, 0.18);
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 800;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 6px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.topHeroFruitCard:hover .topHeroFruitName,
+.topHeroFruitCard:focus-visible .topHeroFruitName {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 @keyframes topHeroCarouselSpin {
@@ -2202,13 +2231,18 @@ p {
   }
 
   .topHeroFruitCard {
-    width: 118px;
+    width: 108px;
     border-radius: 22px;
     transform:
       translate(-50%, -50%)
       rotateY(var(--hero-angle))
-      translateZ(170px)
+      translateZ(150px)
       rotateX(8deg);
+  }
+
+  .topHeroFruitName {
+    bottom: -32px;
+    font-size: 0.72rem;
   }
 
   .topStepGrid,
