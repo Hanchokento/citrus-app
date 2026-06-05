@@ -1884,31 +1884,36 @@ p {
   display: block;
 }
 
+.topHeroFruitImageSmall {
+  padding: 10px;
+  object-fit: contain;
+}
+
 .topHeroFruitName {
   position: absolute;
+  top: 50%;
   left: 50%;
-  bottom: -36px;
   z-index: 2;
   min-width: max-content;
   margin: 0;
-  padding: 6px 12px;
+  padding: 7px 14px;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(249, 128, 6, 0.22);
-  box-shadow: 0 12px 24px rgba(146, 64, 14, 0.18);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(249, 128, 6, 0.24);
+  box-shadow: 0 12px 24px rgba(146, 64, 14, 0.2);
   color: var(--text);
   font-size: 0.82rem;
   font-weight: 800;
   opacity: 0;
   pointer-events: none;
-  transform: translate(-50%, 6px);
+  transform: translate(-50%, calc(-50% + 6px));
   transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
 .topHeroFruitCard:hover .topHeroFruitName,
 .topHeroFruitCard:focus-visible .topHeroFruitName {
   opacity: 1;
-  transform: translate(-50%, 0);
+  transform: translate(-50%, -50%);
 }
 
 @keyframes topHeroCarouselSpin {
@@ -2241,7 +2246,6 @@ p {
   }
 
   .topHeroFruitName {
-    bottom: -32px;
     font-size: 0.72rem;
   }
 

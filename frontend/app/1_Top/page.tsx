@@ -79,6 +79,7 @@ const FEATURES: {
 ];
 
 const HERO_CITRUS_IDS = [14, 8, 17, 29, 38, 10, 11, 13, 39];
+const HERO_SMALL_IMAGE_IDS = new Set([38]);
 
 export default function TopPage() {
   const router = useRouter();
@@ -179,7 +180,11 @@ export default function TopPage() {
                             ? item.name
                             : `品種ID ${item.id}`
                         }
-                        className="topHeroFruitImage"
+                        className={
+                          HERO_SMALL_IMAGE_IDS.has(item.id)
+                            ? "topHeroFruitImage topHeroFruitImageSmall"
+                            : "topHeroFruitImage"
+                        }
                       />
                     </div>
                     <p className="topHeroFruitName">
