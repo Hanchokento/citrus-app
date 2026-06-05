@@ -2,9 +2,12 @@
 // frontend/app/1_Top/page.tsx
 
 import Image from "next/image";
+import { useEffect, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { CitrusImage } from "@/components/CitrusImage";
+import { requestCitrusDetails } from "@/lib/api";
 import TasteRadarChart from "@/components/TasteRadarChart";
+import type { CitrusSummary } from "@/lib/types";
 import type { TasteInput } from "@/lib/types";
 
 const SAMPLE_FEATURES: TasteInput = {
@@ -76,8 +79,43 @@ const FEATURES: {
   },
 ];
 
+const HERO_CITRUS_IDS = [14, 8, 17, 29, 38];
+
 export default function TopPage() {
   const router = useRouter();
+  const [heroNameStatus, setHeroNameStatus] = useState<"loading" | "loaded" | "error">(
+    "loading"
+  );
+  const [heroCitrus, setHeroCitrus] = useState<CitrusSummary[]>(
+    HERO_CITRUS_IDS.map((id) => ({
+      id,
+      name: "",
+      description: "",
+      imageUrl: `/citrus_images/citrus_${id}.JPG`,
+    }))
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+
+    requestCitrusDetails(HERO_CITRUS_IDS)
+      .then((items) => {
+        if (!cancelled && items.length > 0) {
+          setHeroCitrus(items);
+          setHeroNameStatus("loaded");
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to load hero citrus details", error);
+        if (!cancelled) {
+          setHeroNameStatus("error");
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <main className="topLanding">
@@ -114,12 +152,40 @@ export default function TopPage() {
             </div>
           </div>
 
-          <div className="topHeroVisual" aria-hidden="true">
-            <div className="topHeroOrb">
-              <span className="topEmojiFloat topEmojiFloat1">🍊</span>
-              <span className="topEmojiFloat topEmojiFloat2">🍊</span>
-              <span className="topEmojiFloat topEmojiFloat3">🍋</span>
-              <span className="topEmojiFloat topEmojiFloat4">🍋</span>
+          <div className="topHeroVisual">
+            <div className="topHeroScene">
+              <div className="topHeroGlow" aria-hidden="true" />
+              <div className="topHeroCarousel" aria-label="おすすめ柑橘のイメージ">
+                {heroCitrus.map((item, index) => (
+                  <article
+                    className="topHeroFruitCard"
+                    key={item.id}
+                    style={
+                      {
+                        "--hero-angle": `${index * (360 / heroCitrus.length)}deg`,
+                      } as CSSProperties
+                    }
+                  >
+                    <div className="topHeroFruitImageWrap">
+                      <CitrusImage
+                        id={item.id}
+                        alt={item.name}
+                        className="topHeroFruitImage"
+                      />
+                    </div>
+                    <div className="topHeroFruitMeta">
+                      <p className="topHeroFruitId">品種ID {item.id}</p>
+                      <p className="topHeroFruitName">
+                        {heroNameStatus === "loaded"
+                          ? item.name
+                          : heroNameStatus === "loading"
+                            ? "品種名取得中"
+                            : "品種名未取得"}
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
           </div>
         </div>

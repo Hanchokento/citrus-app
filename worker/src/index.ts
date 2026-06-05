@@ -6,6 +6,7 @@ import { recommendRoute } from "./routes/caluculation_logic";
 import { diagnosisLogRoute } from "./routes/diagnosis-log";
 import { clickLogRoute } from "./routes/click-log";
 import { healthRoute } from "./routes/health";
+import { citrusRoute } from "./routes/citrus";
 
 export type Env = {
   DB: D1Database;
@@ -32,6 +33,7 @@ app.get("/", (c) => {
 
 app.route("/health", healthRoute);
 app.route("/recommend", recommendRoute);
+app.route("/citrus", citrusRoute);
 app.route("/logs/diagnosis", diagnosisLogRoute);
 app.route("/click", clickLogRoute);
 
