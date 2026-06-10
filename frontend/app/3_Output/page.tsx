@@ -172,6 +172,17 @@ export default function OutputPage() {
                     alt={item.name}
                     className="resultImage"
                   />
+                  {/* TODO: item.infoUrl が追加されたら href={item.infoUrl ?? `https://...`} に変更する */}
+                  <a
+                    className="varietyInfoLink"
+                    href={`https://www.google.com/search?q=${encodeURIComponent(
+                      `${item.name} 柑橘 品種`,
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    この品種について調べる →
+                  </a>
                 </div>
 
                 <div className="resultInfo">

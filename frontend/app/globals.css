@@ -833,8 +833,10 @@ p {
 
 .resultImageWrap {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  gap: 10px;
 }
 
 .resultImage {
@@ -845,6 +847,60 @@ p {
   border-radius: var(--radius-lg);
   background: var(--cream);
   border: 1px solid var(--card-border);
+}
+
+/* ===== 画像なし品種のCSSプレースホルダー ===== */
+
+.citrusImagePlaceholder {
+  width: 100%;
+  max-width: 220px;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255, 237, 213, 0.96), rgba(255, 247, 237, 0.92)),
+    #fff7ed;
+  border: 1px dashed rgba(249, 128, 6, 0.32);
+}
+
+.citrusImagePlaceholderFruit {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 28%, #fff1c2 0%, #fbbf24 30%, #f97316 78%);
+  box-shadow:
+    inset -8px -8px 18px rgba(194, 65, 12, 0.16),
+    0 10px 20px rgba(249, 115, 22, 0.12);
+  flex-shrink: 0;
+}
+
+.citrusImagePlaceholderText {
+  font-size: 0.9rem;
+  font-weight: 900;
+  color: #c2410c;
+}
+
+/* ===== 品種情報リンク（画像下） ===== */
+
+.varietyInfoLink {
+  display: inline-block;
+  color: #c2410c;
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(194, 65, 12, 0.35);
+  line-height: 1.5;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.varietyInfoLink:hover {
+  color: #9a3412;
+  border-bottom-color: #9a3412;
 }
 
 .resultInfo h2 {
