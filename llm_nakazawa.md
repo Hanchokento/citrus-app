@@ -104,6 +104,34 @@ Neurons はCloudflareがAI推論のGPU計算量を測るための単位。LLMで
 
 したがって、試作や少量利用なら無料枠で始められる可能性がある。一方で、公開アプリとして多数ユーザーに使わせる場合や、長い回答を大量に生成する場合は課金前提で見積もる必要がある。
 
+### 10,000 Neurons/dayでどれくらい使えるか
+
+10,000 Neurons/day は、使うモデルと入出力トークン数によって大きく変わる。計算式は以下。
+
+```text
+1回の消費Neurons =
+  入力トークン数 * 入力側Neurons per token
+  + 出力トークン数 * 出力側Neurons per token
+```
+
+例として「1回の質問で input 500 tokens / output 500 tokens」と仮定すると、無料枠 10,000 Neurons/day で使える回数はおおよそ以下。
+
+| モデル | 目安回数 / day | 備考 |
+| --- | ---: | --- |
+| `@cf/meta/llama-3.2-1b-instruct` | 約966回 | 小型で安い |
+| `@cf/meta/llama-3.2-3b-instruct` | 約570回 | 小型-中型 |
+| `@cf/qwen/qwen3-30b-a3b-fp8` | 約570回 | Qwen系では比較的安い |
+| `@cf/meta/llama-3.1-8b-instruct-fp8-fast` | 約513回 | 8B級 |
+| `@cf/google/gemma-4-26b-a4b-it` | 約476回 | Gemma系 |
+| `@cf/google/gemma-3-12b-it` | 約244回 | Gemma 3 12B |
+| `@cf/meta/llama-3.3-70b-instruct-fp8-fast` | 約86回 | 70B級で高め |
+| `@cf/qwen/qwq-32b` | 約66回 | reasoning系で高め |
+| `@cf/qwen/qwen2.5-coder-32b-instruct` | 約66回 | coder 32Bで高め |
+
+短い分類・抽出・要約ならもっと多く使える。逆に、長い文章を入力したり、長い回答を生成したりすると回数は大きく減る。特にLLMは出力トークン側の単価が高いモデルが多いため、回答を長くさせるほど無料枠を消費しやすい。
+
+たとえば `@cf/qwen/qwen3-30b-a3b-fp8` では、input 500 / output 500 tokens なら約570回/day。input 1,000 / output 500 tokens なら約503回/day。input 500 / output 1,000 tokens なら約305回/day 程度になる。
+
 料金確認用リンク:
 
 - Cloudflare Workers AI Pricing: https://developers.cloudflare.com/workers-ai/platform/pricing/
