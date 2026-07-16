@@ -1,6 +1,19 @@
 // frontend/app/page.tsx
-import { redirect } from "next/navigation";
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
-  redirect("/1_Top");
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/1_Top/");
+  }, [router]);
+
+  return (
+    <main className="page">
+      <p>柑橘おすすめ診断を開いています…</p>
+    </main>
+  );
 }

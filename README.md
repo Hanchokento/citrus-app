@@ -54,6 +54,9 @@ citrus-app/
 
 - Cloudflare Pages
     - frontend を配信する場所
+    - Framework preset: `Next.js (Static HTML Export)`
+    - Build command: `pnpm run build`
+    - Build output directory: `out`
 
 - Cloudflare Workers
     - APIと推薦計算を動かす場所
