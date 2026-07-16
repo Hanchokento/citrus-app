@@ -361,6 +361,20 @@ export default function InputPage() {
             過去の選択傾向をもとに、似た好みの人の行動から推薦します。
           </span>
         </button>
+
+        <button
+          className="recommendActionButton recommendActionAi"
+          type="button"
+          onClick={() => router.push("/4_Chat")}
+        >
+          <span className="recommendActionEyebrow">AIと会話しながら</span>
+          <span className="recommendActionTitle">
+            柑橘ソムリエに相談して探す
+          </span>
+          <span className="recommendActionText">
+            好きな味を自由な言葉で伝えて、会話しながらおすすめを探します。
+          </span>
+        </button>
       </div>
     </main>
   );

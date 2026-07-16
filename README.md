@@ -15,6 +15,8 @@ citrus-app/
 │   │   │   └── page.tsx
 │   │   ├── 3_Output/          # 推薦結果ページ
 │   │   │   └── page.tsx
+│   │   ├── 4_Chat/            # ブラウザ内LLMとの対話推薦ページ
+│   │   │   └── page.tsx
 │   │   ├── globals.css        # アプリ全体のCSS
 │   │   ├── layout.tsx         # 全ページ共通レイアウト
 │   │   └── page.tsx           # ルートページ
@@ -28,6 +30,7 @@ citrus-app/
 │   │
 │   ├── lib/                   # フロントエンド共通ロジック
 │   │   ├── context.tsx        # アプリ状態管理
+│   │   ├── local-citrus-ai.ts # WebLLMの読み込み・好み抽出・応答生成
 │   │   └── types.ts           # フロントエンド共通型定義
 │   │
 │   ├── public/                # 静的ファイル
@@ -89,6 +92,21 @@ npx tsc --noEmit
 # Cloudflare Workersへデプロイする
 # wrangler.toml の設定に基づいてデプロイされる
 npx wrangler deploy
+```
+
+## 回数制限のないローカルLLM
+
+`/4_Chat` では、WebLLMを使って `Qwen3-0.6B-q4f16_1-MLC` を利用者のブラウザ内で実行します。外部のLLM推論APIを呼ばないため、APIキー、課金登録、推論回数の上限はありません。
+
+- 初回のみ約352MBのモデルを取得し、ブラウザへキャッシュ
+- GPUメモリ使用量の目安は約1.4GB
+- WebGPU対応ブラウザが必要（最新版のChromeまたはEdgeを推奨）
+- 会話から確認できた好みだけを1〜6の値に変換
+- 品種の順位は既存の `/recommend` APIで計算
+- LLMの説明は計算済み上位3品種だけを根拠に生成
+- 不自然な生成や候補名の欠落があれば、登録データだけの定型文へ自動でフォールバック
+
+ここで「回数制限なし・無料」としているのはLLM推論部分です。Cloudflare Pages / Workersなどアプリ基盤の利用料、利用者の通信量や電気代、モデル配布元の可用性は別です。
 
 ---
 # 協調フィルタリングの計算ロジック
